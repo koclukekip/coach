@@ -1,0 +1,29 @@
+<h2>Üniversiteler</h2>
+<mat-form-field appearance="outline" style="width:320px">
+  <mat-label>Arama</mat-label>
+  <input matInput placeholder="İsim/Şehir/Tür" [ngModel]="query()" (ngModelChange)="query.set($event)">
+</mat-form-field>
+
+<mat-table [dataSource]="data()" class="mat-elevation-z1">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Ad </mat-header-cell>
+    <mat-cell *matCellDef="let u"> {{u.name}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="city">
+    <mat-header-cell *matHeaderCellDef> Şehir </mat-header-cell>
+    <mat-cell *matCellDef="let u"> {{u.city}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="type">
+    <mat-header-cell *matHeaderCellDef> Tür </mat-header-cell>
+    <mat-cell *matCellDef="let u">
+      <mat-chip-set>
+        <mat-chip [color]="u.type==='vakif' ? 'primary' : 'accent'" selected>{{u.type}}</mat-chip>
+      </mat-chip-set>
+    </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

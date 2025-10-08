@@ -1,0 +1,8 @@
+.chat-card{border:1px solid #e5e7eb;border-radius:16px;padding:16px;margin:14px 0;cursor: pointer;box-shadow:0 8px 24px rgba(2,6,23,.06);transition: box-shadow .2s ease, transform .2s ease}
+.chat-card:hover{box-shadow:0 16px 36px rgba(2,6,23,.12);transform:translateY(-1px)}
+.messages{max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:10px;background:linear-gradient(180deg,#f8fafc, #f1f5f9);padding:12px;border-radius:12px}
+.bubble{display:inline-block;padding:10px 14px;border-radius:14px;max-width:80%;border:1px solid #e5e7eb}
+.bubble.me{background:#fff}
+.bubble.them{background:#e0f2fe;border-color:#bae6fd}
+.meta{font-size:11px;color:#94a3b8;margin-top:4px}
+

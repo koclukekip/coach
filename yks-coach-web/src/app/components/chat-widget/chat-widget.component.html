@@ -1,0 +1,21 @@
+<div class="chat-widget" [class.open]="isOpen()">
+  <button class="chat-toggle" (click)="toggle()" aria-label="Sohbeti aç/kapat">
+    <span *ngIf="!isOpen()">Sohbet</span>
+    <span *ngIf="isOpen()">Kapat</span>
+  </button>
+
+  <div class="chat-panel" *ngIf="isOpen()">
+    <div class="chat-header">Canlı Destek</div>
+    <div class="chat-messages">
+      <div *ngFor="let m of messages()" class="msg" [class.me]="m.role!=='user'">
+        <div class="bubble">{{ m.text }}</div>
+      </div>
+    </div>
+    <form class="chat-input" (ngSubmit)="send()">
+      <input type="text" name="msg" [ngModel]="pendingText()" (ngModelChange)="pendingText.set($event)" placeholder="Mesaj yazın..."/>
+      <button type="submit">Gönder</button>
+    </form>
+  </div>
+</div>
+
+

@@ -1,0 +1,259 @@
+<!-- Moved main landing sections from app.component.html into this HomeComponent -->
+<section class="hero">
+  <!-- Keep structure identical to previous hero section for brevity -->
+  <div class="hero-container container">
+    <div class="hero-content">
+      <div class="hero-badge">Yüzlerce Öğrencinin Güvendiği Koçluk Platformu</div>
+      <h1>YKS ve LGS Koçluk ile<br> Dereceye Giden Yol Sende Başlıyor</h1>
+      <p>TYT, AYT ve LGS'ye hazırlanan öğrenciler için birebir koçluk, kişisel çalışma planı, düzenli takip, motivasyon desteği ve psikolojik rehberlik sunuyoruz.</p>
+      <a routerLink="/ucretsiz-danismanlik" style="text-decoration: none;" class="hero-btn" aria-label="Ücretsiz YKS ve LGS koçluk görüşmesi planla">📅 Ücretsiz Görüşme Planla</a>
+    </div>
+    <div class="hero-center">
+      <div class="hero-image" style="font-size:64px">🎓</div>
+    </div>
+    <div class="hero-right">
+      <div class="slider-container">
+        <div class="swiper hero-slider">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <div class="hero-card">
+                <div class="card-header"><div class="time">🕐 Son 4 kişi!</div></div>
+                <div class="card-image" style="font-size:48px">📚</div>
+                <h3>Bireysel YKS Koçluk</h3>
+                <p>YKS'ye özel kişisel hedeflerinize yönelik TYT ve AYT koçluk programı</p>
+                <a routerLink="/egitmenlerimiz" [queryParams]="{yks_only:'on'}" class="card-btn">İncele</a>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="hero-card">
+                <div class="card-header"><div class="time">🕐 Son 7 kişi!</div></div>
+                <div class="card-image" style="font-size:48px">🧠</div>
+                <h3>Bireysel LGS Koçluk</h3>
+                <p>LGS'ye hazırlık için motivasyonu yüksek bireysel koçluk desteği</p>
+                <a routerLink="/egitmenlerimiz" [queryParams]="{lgs_only:'on'}" class="card-btn">İncele</a>
+              </div>
+            </div>
+            <div class="swiper-slide">
+              <div class="hero-card">
+                <div class="card-header"><div class="time">🕐 Son 2 kişi!</div></div>
+                <div class="card-image" style="font-size:48px">🏕️</div>
+                <h3>2026 YKS Paketlerimiz</h3>
+                <p>YKS'ye özel hazırlık programlarımızla başarıya bir adım daha yaklaşın!</p>
+                <a routerLink="/paketlerimiz" class="card-btn">İncele</a>
+              </div>
+            </div>
+          </div>
+          <div class="swiper-pagination slider-dots" role="tablist" aria-label="Koçluk hizmetleri slider"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="services">
+  <div class="services-container container">
+    <div class="services-header"><h2>Hizmetlerimiz</h2></div>
+    <div class="services-grid">
+      <div class="service-card"><div class="service-icon" style="font-size:40px">📘</div><h3>YKS Koçluk</h3><a routerLink="/yks-kocluk-hizmeti" class="service-btn">Bilgi Al</a></div>
+      <div class="service-card"><div class="service-icon" style="font-size:40px">📗</div><h3>LGS Koçluk</h3><a routerLink="/lgs-kocluk-hizmeti" class="service-btn">Bilgi Al</a></div>
+    </div>
+  </div>
+  <div class="consultation-section container">
+    <div class="consultation-content">
+      <div class="consultation-image" style="font-size:56px">🤝</div>
+      <div class="consultation-text"><h3 style="text-align:center;">Ücretsiz YKS ve LGS Koçluk Danışmanlığı</h3>
+        <div class="consultation-info"><div class="time-info"><span class="time-icon" aria-hidden="true">🕐</span><span>15-30 dakika</span></div>
+        <a routerLink="/ucretsiz-danismanlik" style="text-decoration:none;" class="consultation-btn">Ücretsiz Görüşme Planla</a></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="why-us">
+  <div class="why-us-container container">
+    <div class="why-us-header"><div class="why-us-badge">Neden Biz?</div>
+      <h2>YKS Koçluk ve LGS Koçluk ile Dereceye Giden Yol</h2></div>
+    <div class="features-grid">
+      <div class="feature-tag active" data-category="profesyonel-koclar"><i class="fas fa-user-graduate" aria-hidden="true"></i><span>YKS ve LGS Koçları</span></div>
+      <div class="feature-tag" data-category="deneme-sinavlari"><i class="fas fa-file-alt" aria-hidden="true"></i><span>TYT AYT LGS Denemeleri</span></div>
+      <div class="feature-tag" data-category="gelisim-takibi"><i class="fas fa-chart-line" aria-hidden="true"></i><span>Gelişim Takibi</span></div>
+      <div class="feature-tag" data-category="soruhub"><i class="fas fa-question-circle" aria-hidden="true"></i><span>Soru Çözüm Sistemi</span></div>
+      <div class="feature-tag" data-category="planlar"><i class="fas fa-calendar-alt" aria-hidden="true"></i><span>Çalışma Planları</span></div>
+      <div class="feature-tag" data-category="soru-havuzu"><i class="fas fa-database" aria-hidden="true"></i><span>Soru Havuzu</span></div>
+    </div>
+    <div class="content-section">
+      <div class="content-left">
+        <div class="content-block active" id="profesyonel-koclar">
+          <div class="experience-item"><h3>Derece Yapan YKS ve LGS Koçları</h3><p>Türkiye derecesi elde etmiş deneyimli koçlarımızla birebir strateji.</p></div>
+          <div class="support-item"><h3>Uzman Psikolojik Destek</h3><p>PDR mezunu danışmanlarımız süreç boyunca yanınızda.</p></div>
+        </div>
+        <div class="content-block" id="deneme-sinavlari"><div class="experience-item"><h3>YKS ve LGS Deneme Deneyimi</h3><p>Gerçek sınav formatına uygun denemeler.</p></div></div>
+        <div class="content-block" id="gelisim-takibi"><div class="experience-item"><h3>Gelişim Takibi</h3><p>Veriye dayalı analiz ve öneriler.</p></div></div>
+        <div class="content-block" id="soruhub"><div class="experience-item"><h3>Soru Çözüm Sistemi</h3><p>Uzmanlardan hızlı çözümler.</p></div></div>
+        <div class="content-block" id="planlar"><div class="experience-item"><h3>Çalışma Planları</h3><p>Kişiselleştirilmiş programlar.</p></div></div>
+        <div class="content-block" id="soru-havuzu"><div class="experience-item"><h3>Soru Havuzu</h3><p>Binlerce özgün soru.</p></div></div>
+      </div>
+      <div class="content-right">
+        <div class="phone-mockup active" id="img-profesyonel-koclar">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-notch"></div>
+              <div class="phone-title">Koç Paneli</div>
+            </div>
+            <div class="phone-content">
+              <div class="coach-card">
+                <div class="coach-avatar">👨‍🏫</div>
+                <div class="coach-info">
+                  <h4>Dr. Ahmet Yılmaz</h4>
+                  <p>YKS Koçu</p>
+                  <div class="rating">⭐⭐⭐⭐⭐</div>
+                </div>
+              </div>
+              <div class="coach-card">
+                <div class="coach-avatar">👩‍🏫</div>
+                <div class="coach-info">
+                  <h4>Prof. Ayşe Demir</h4>
+                  <p>LGS Koçu</p>
+                  <div class="rating">⭐⭐⭐⭐⭐</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="phone-mockup" id="img-deneme-sinavlari">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-notch"></div>
+              <div class="phone-title">Deneme Sınavları</div>
+            </div>
+            <div class="phone-content">
+              <div class="exam-card">
+                <div class="exam-icon">📝</div>
+                <div class="exam-info">
+                  <h4>TYT Denemesi #15</h4>
+                  <p>Matematik - 40 Soru</p>
+                  <div class="exam-progress">
+                    <div class="progress-bar">
+                      <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    <span>75% Tamamlandı</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="phone-mockup" id="img-gelisim-takibi">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-notch"></div>
+              <div class="phone-title">Gelişim Takibi</div>
+            </div>
+            <div class="phone-content">
+              <div class="chart-container">
+                <div class="chart-title">Puan Gelişimi</div>
+                <div class="chart">
+                  <div class="chart-bar" style="height: 60%"></div>
+                  <div class="chart-bar" style="height: 75%"></div>
+                  <div class="chart-bar" style="height: 85%"></div>
+                  <div class="chart-bar" style="height: 90%"></div>
+                </div>
+                <div class="chart-labels">
+                  <span>Ocak</span>
+                  <span>Şubat</span>
+                  <span>Mart</span>
+                  <span>Nisan</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="phone-mockup" id="img-soruhub">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-notch"></div>
+              <div class="phone-title">Soru Çözüm</div>
+            </div>
+            <div class="phone-content">
+              <div class="question-card">
+                <div class="question-text">
+                  <p>Matematik sorusu çözümü...</p>
+                </div>
+                <div class="question-actions">
+                  <button class="action-btn">📷 Fotoğraf</button>
+                  <button class="action-btn">✍️ Yazı</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="phone-mockup" id="img-planlar">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-notch"></div>
+              <div class="phone-title">Çalışma Planı</div>
+            </div>
+            <div class="phone-content">
+              <div class="schedule-item">
+                <div class="time">09:00</div>
+                <div class="task">Matematik - Türev</div>
+              </div>
+              <div class="schedule-item">
+                <div class="time">10:30</div>
+                <div class="task">Fizik - Elektrik</div>
+              </div>
+              <div class="schedule-item">
+                <div class="time">14:00</div>
+                <div class="task">Deneme Sınavı</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="phone-mockup" id="img-soru-havuzu">
+          <div class="phone-screen">
+            <div class="phone-header">
+              <div class="phone-notch"></div>
+              <div class="phone-title">Soru Havuzu</div>
+            </div>
+            <div class="phone-content">
+              <div class="question-stats">
+                <div class="stat-item">
+                  <div class="stat-number">2,500+</div>
+                  <div class="stat-label">Matematik</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">1,800+</div>
+                  <div class="stat-label">Fizik</div>
+                </div>
+                <div class="stat-item">
+                  <div class="stat-number">1,200+</div>
+                  <div class="stat-label">Kimya</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="whatsapp-cta">
+  <div class="whatsapp-container container">
+    <div class="content-wrapper">
+      <div class="text-content">
+        <h2>YKS ve LGS Koçluk Duyuruları İçin<br>WhatsApp Grubumuza Katıl</h2>
+        <p>Günlük motivasyon, birebir destek, soru çözümleri ve duyurular.</p>
+        <a href="https://www.whatsapp.com/channel/0029VauQjc2FCCoWd8it6F0U" target="_blank" rel="noopener noreferrer" class="whatsapp-btn">WhatsApp Grubuna Katıl</a>
+      </div>
+      <div class="decoration"><img src="/static/pages/images/yaprak.png" alt="dekor" class="leaf-decoration" loading="lazy"></div>
+    </div>
+  </div>
+</section>
+
+

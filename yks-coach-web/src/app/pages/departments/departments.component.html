@@ -1,0 +1,34 @@
+<h2>Bölümler</h2>
+<div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+  <mat-form-field appearance="outline" style="width:220px">
+    <mat-label>Alan</mat-label>
+    <mat-select [ngModel]="field()" (ngModelChange)="field.set($event)">
+      <mat-option [value]="null">Hepsi</mat-option>
+      <mat-option *ngFor="let f of fields" [value]="f.value">{{f.label}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+  <mat-form-field appearance="outline" style="width:240px">
+    <mat-label>Arama</mat-label>
+    <input matInput placeholder="Bölüm adı" [ngModel]="q()" (ngModelChange)="q.set($event)">
+  </mat-form-field>
+</div>
+
+<mat-table [dataSource]="data()" class="mat-elevation-z1">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Bölüm </mat-header-cell>
+    <mat-cell *matCellDef="let d"> {{d.name}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="field">
+    <mat-header-cell *matHeaderCellDef> Alan </mat-header-cell>
+    <mat-cell *matCellDef="let d"> {{d.field}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="university">
+    <mat-header-cell *matHeaderCellDef> Üniversite </mat-header-cell>
+    <mat-cell *matCellDef="let d"> {{d.universityName}} </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>

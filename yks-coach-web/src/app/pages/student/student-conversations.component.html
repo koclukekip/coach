@@ -1,0 +1,52 @@
+<section class="container" style="max-width:800px;margin:24px auto">
+  <h1>Sohbet Taleplerim</h1>
+  <form (ngSubmit)="request()" class="request-form">
+    <div class="input-wrap">
+      <span class="prefix">👤</span>
+      <input placeholder="Koç kullanıcı adı" [ngModel]="coach()" (ngModelChange)="coach.set($event)" name="coach" required />
+    </div>
+    <button class="btn btn-primary cta" type="submit">➕ Talep Gönder</button>
+  </form>
+  <div *ngFor="let c of convs()" (click)="openIfClosed(c, $event)" style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:12px 0;cursor: pointer;box-shadow:0 2px 10px rgba(0,0,0,.04)">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div>
+        <div style="font-weight:600">Koç: {{ c.coachUsername }}</div>
+        <div style="font-size:12px;color:#64748b;display:flex;align-items:center;gap:6px">
+          <span>Durum:</span>
+          <span *ngIf="c.status==='ACCEPTED'" aria-label="Kabul edildi" title="Kabul edildi" style="color:#16a34a">✓</span>
+          <span *ngIf="c.status==='REJECTED'" aria-label="Reddedildi" title="Reddedildi" style="color:#dc2626">✗</span>
+          <span *ngIf="c.status==='PENDING'" aria-label="Beklemede" title="Beklemede" style="color:#64748b">•</span>
+        </div>
+      </div>
+      <span *ngIf="c.status==='PENDING'" style="font-size:12px;color:#64748b">Beklemede</span>
+      <span *ngIf="c.status==='ACCEPTED'" style="font-size:12px;color:#16a34a">Açmak için tıklayın</span>
+      <span *ngIf="c.status==='REJECTED'" style="font-size:12px;color:#dc2626">Reddedildi</span>
+    </div>
+    <div *ngIf="activeId()===c.id" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px">
+      <div #messagesBox style="max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:8px;background:#f8fafc;padding:10px;border-radius:10px">
+        <ng-container *ngFor="let m of messages(); let i = index">
+          <div *ngIf="isNewDay(i)" style="text-align:center;color:#94a3b8;font-size:12px;margin:6px 0">{{ formatDay(m.ts) }}</div>
+          <div [style]="m.role==='user'? 'text-align:left' : 'text-align:right'">
+            <span style="display:inline-block;padding:8px 12px;border-radius:12px;max-width:80%" [style.background]="m.role==='coach'?'#e0f2fe':'#fff'" [style.border]="'1px solid #e5e7eb'">
+              {{ m.text }}
+              <div style="font-size:11px;color:#94a3b8;margin-top:4px">{{ formatTime(m.ts) }}</div>
+            </span>
+          </div>
+        </ng-container>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
+        <button class="btn" type="button" (click)="toggleVideo()" style="border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px">🎥 Video</button>
+      </div>
+      <div *ngIf="videoActive()" style="display:flex;gap:8px;margin-top:10px;align-items:flex-start">
+        <video [appMediaStream]="localStream()" muted playsinline style="width:45%;background:#000;border-radius:8px"></video>
+        <video [appMediaStream]="remoteStream()" playsinline style="width:55%;background:#000;border-radius:8px"></video>
+      </div>
+      <form (ngSubmit)="send()" style="display:flex;gap:8px;margin-top:10px">
+        <input name="msg" [ngModel]="draft()" (ngModelChange)="draft.set($event)" placeholder="Mesaj yazın..." style="flex:1;border:1px solid #e5e7eb;border-radius:10px;padding:10px"/>
+        <button class="btn btn-primary" type="submit" style="background:#36786b;color:#fff;border:none;border-radius:10px;padding:10px 14px">Gönder</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+

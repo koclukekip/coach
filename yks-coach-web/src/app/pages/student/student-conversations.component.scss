@@ -1,0 +1,38 @@
+.container h1{margin-bottom:12px;font-weight:800;letter-spacing:-.02em}
+
+.chat-card{
+  border:1px solid #e5e7eb;
+  border-radius:16px;
+  padding:16px;
+  margin:14px 0;
+  cursor: pointer;
+  box-shadow:0 8px 24px rgba(2,6,23,.06);
+  transition: box-shadow .2s ease, transform .2s ease;
+}
+.chat-card:hover{box-shadow:0 16px 36px rgba(2,6,23,.12);transform:translateY(-1px)}
+
+.messages{
+  max-height:360px;overflow:auto;display:flex;flex-direction:column;gap:10px;
+  background:linear-gradient(180deg,#f8fafc, #f1f5f9);
+  padding:12px;border-radius:12px;
+}
+.bubble{display:inline-block;padding:10px 14px;border-radius:14px;max-width:80%;border:1px solid #e5e7eb}
+.bubble.me{background:#fff}
+.bubble.them{background:#e0f2fe;border-color:#bae6fd}
+.meta{font-size:11px;color:#94a3b8;margin-top:4px}
+
+.request-form{display:flex;gap:12px;margin:16px 0}
+.request-form .input-wrap{
+  flex:1;display:flex;align-items:center;gap:8px;
+  border:1px solid #e5e7eb;border-radius:12px;padding:10px 12px;background:#ffffff;
+  box-shadow:0 4px 14px rgba(2,6,23,.06);
+}
+.request-form .input-wrap:focus-within{border-color:#36786b;box-shadow:0 0 0 4px rgba(54,120,107,.15)}
+.request-form .input-wrap .prefix{color:#64748b}
+.request-form .input-wrap input{flex:1;border:none;outline:none;font-size:14px;background:transparent}
+.request-form .cta{
+  background:#36786b;color:#fff;border:none;border-radius:12px;padding:12px 16px;cursor:pointer;
+  box-shadow:0 8px 20px rgba(54,120,107,.25);transition:transform .15s ease, box-shadow .15s ease;
+}
+.request-form .cta:hover{transform:translateY(-1px);box-shadow:0 12px 24px rgba(54,120,107,.3)}
+

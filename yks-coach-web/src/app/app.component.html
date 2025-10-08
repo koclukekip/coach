@@ -1,0 +1,933 @@
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * * The content below * * * * * * * * * * * -->
+<!-- * * * * * * * * * * is only a placeholder * * * * * * * * * * -->
+<!-- * * * * * * * * * * and can be replaced.  * * * * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+<!-- * * * * * * * * * Delete the template below * * * * * * * * * -->
+<!-- * * * * * * * to get started with your project! * * * * * * * -->
+<!-- * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * -->
+
+<!-- Top bar -->
+<style>
+.top-bar {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--text-inverse);
+  padding: 12px 0;
+  font-size: 14px;
+  font-weight: 500;
+  position: relative;
+  overflow: hidden;
+}
+
+.top-bar::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="topPattern" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="0.5" fill="white" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23topPattern)"/></svg>');
+  opacity: 0.3;
+}
+
+.top-bar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+  z-index: 2;
+}
+
+.social-icons {
+  display: flex;
+  gap: 20px;
+}
+
+.social-link {
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 18px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 8px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+}
+
+.social-link:hover {
+  color: var(--text-inverse);
+  background: rgba(255, 255, 255, 0.1);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.discount-text {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 15px;
+}
+
+.discount-text a {
+  color: var(--text-inverse);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  padding: 8px 16px;
+  border-radius: 20px;
+  display: inline-block;
+}
+
+.discount-text a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  transform: scale(1.05);
+}
+
+.contact-info {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.9);
+}
+
+.contact-info a {
+  color: rgba(255, 255, 255, 0.9);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 20px;
+  transition: all 0.3s ease;
+}
+
+.contact-info a:hover {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-inverse);
+}
+
+.contact-info i {
+  font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .top-bar .container {
+    flex-direction: column;
+    gap: 12px;
+    text-align: center;
+  }
+  
+  .discount-text {
+    order: -1;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  
+  .social-icons {
+    order: 1;
+    gap: 16px;
+  }
+  
+  .social-link {
+    font-size: 16px;
+    width: 32px;
+    height: 32px;
+  }
+  
+  .contact-info {
+    order: 2;
+    font-size: 13px;
+    gap: 8px;
+  }
+  
+  .contact-info i {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .top-bar {
+    font-size: 13px;
+    padding: 10px 0;
+  }
+  
+  .discount-text {
+    font-size: 15px;
+    font-weight: 700;
+  }
+  
+  .social-link {
+    font-size: 14px;
+    width: 28px;
+    height: 28px;
+  }
+  
+  .contact-info {
+    font-size: 12px;
+    margin-top: 8px;
+  }
+  
+  .contact-info i {
+    font-size: 12px;
+  }
+  
+  .social-icons {
+    display: none;
+  }
+}
+</style>
+
+<div class="top-bar">
+  <div class="container">
+    <div class="social-icons">
+      <a [href]="site.socials.youtube" class="social-link" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-youtube"></i>
+      </a>
+      <a [href]="site.socials.tiktok" class="social-link" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-tiktok"></i>
+      </a>
+      <a [href]="site.socials.instagram" class="social-link" target="_blank" rel="noopener noreferrer">
+        <i class="fab fa-instagram"></i>
+      </a>
+    </div>
+    <div class="discount-text">
+      <a style="text-decoration: none; color: #fff;" routerLink="/paketlerimiz">
+        <span>YKS paketlerimizde indirimleri kaçırmayın!</span>
+      </a>
+    </div>
+    <div class="contact-info">
+      <a [href]="'tel:' + site.phone" class="contact-phone" style="color:#b6d2ce;text-decoration:none">
+        <i class="fas fa-phone"></i>
+        {{ site.phoneDisplay }}
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- Navbar -->
+<style>
+.navbar {
+  background: var(--bg-primary);
+  box-shadow: var(--shadow-md);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.navbar .container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px;
+  gap: 20px;
+}
+
+.nav-brand {
+  flex: 1;
+  display: flex;
+  align-items: center;
+}
+
+.nav-brand .logo {
+  height: 60px;
+  width: auto;
+  transition: all 0.3s ease;
+}
+
+.nav-brand .logo:hover {
+  transform: scale(1.05);
+}
+
+.nav-center {
+  flex: 5;
+  display: flex;
+  justify-content: center;
+}
+
+.nav-right {
+  flex: 2;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 20px;
+}
+
+.nav-menu {
+  display: flex;
+  list-style: none;
+  gap: 40px;
+  margin: 0;
+  padding: 0;
+  align-items: center;
+}
+
+.nav-menu li {
+  position: relative;
+}
+
+.nav-link {
+  text-decoration: none;
+  color: var(--text-primary);
+  font-weight: 600;
+  font-size: 15px;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px 16px;
+  border-radius: 8px;
+  position: relative;
+}
+
+.nav-link:hover {
+  color: var(--primary);
+  background: var(--bg-accent);
+  transform: translateY(-1px);
+}
+
+.arrow-icon {
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--text-primary);
+  transition: all 0.3s ease;
+  margin-left: 4px;
+}
+
+.dropdown:hover .arrow-icon {
+  transform: rotate(180deg);
+  border-top-color: var(--primary);
+}
+
+.dropdown:hover .nav-link {
+  color: var(--primary);
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  background: var(--bg-primary);
+  min-width: 240px;
+  border-radius: 16px;
+  box-shadow: var(--shadow-xl);
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  z-index: 1000;
+  padding: 20px 0;
+  margin-top: 10px;
+  border: 1px solid var(--border-light);
+  backdrop-filter: blur(10px);
+}
+
+.dropdown:hover .dropdown-menu {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+
+.dropdown-item {
+  display: block;
+  padding: 14px 24px;
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border-radius: 8px;
+  margin: 0 12px;
+  position: relative;
+}
+
+.dropdown-item:hover {
+  background: var(--bg-accent);
+  color: var(--primary);
+  transform: translateX(8px);
+  box-shadow: var(--shadow-sm);
+}
+
+.dropdown-item::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--primary);
+  transition: width 0.3s ease;
+}
+
+.dropdown-item:hover::before {
+  width: 4px;
+}
+
+.btn-register, .btn-login {
+  padding: 12px 28px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  position: relative;
+  overflow: hidden;
+}
+
+.btn-register {
+  background: transparent;
+  border: 2px solid var(--primary);
+  color: var(--primary);
+}
+
+.btn-register:hover {
+  background: var(--primary);
+  color: var(--text-inverse);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-turquoise);
+}
+
+.btn-login {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  border: 2px solid var(--primary);
+  color: var(--text-inverse);
+  box-shadow: var(--shadow-turquoise);
+}
+
+.btn-login:hover {
+  background: linear-gradient(135deg, var(--primary-dark) 0%, var(--secondary) 100%);
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-lg);
+}
+
+.hamburger {
+  display: none;
+  flex-direction: column;
+  cursor: pointer;
+  padding: 8px;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+}
+
+.hamburger:hover {
+  background: var(--bg-accent);
+}
+
+.hamburger span {
+  width: 28px;
+  height: 3px;
+  background: var(--text-primary);
+  margin: 3px 0;
+  transition: all 0.3s ease;
+  border-radius: 2px;
+}
+
+.hamburger.active span:nth-child(1) {
+  transform: rotate(-45deg) translate(-6px, 7px);
+}
+
+.hamburger.active span:nth-child(2) {
+  opacity: 0;
+}
+
+.hamburger.active span:nth-child(3) {
+  transform: rotate(45deg) translate(-6px, -7px);
+}
+
+/* Mobile Navigation */
+@media (max-width: 768px) {
+  .nav-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: var(--bg-primary);
+    flex-direction: column;
+    padding: 30px 20px;
+    box-shadow: var(--shadow-lg);
+    gap: 0;
+    border-top: 1px solid var(--border-light);
+  }
+  
+  .nav-menu.active {
+    display: flex;
+  }
+  
+  .nav-menu li {
+    width: 100%;
+    border-bottom: 1px solid var(--border-light);
+  }
+  
+  .nav-menu li:last-child {
+    border-bottom: none;
+  }
+  
+  .nav-link {
+    justify-content: space-between;
+    width: 100%;
+    padding: 16px 0;
+    border-radius: 0;
+    font-size: 16px;
+  }
+  
+  .dropdown-menu {
+    max-height: 0;
+    overflow: hidden;
+    transform: none;
+    box-shadow: none;
+    margin-top: 0;
+    background: var(--bg-accent);
+    border-radius: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    padding: 0;
+    position: static;
+    box-shadow: none;
+    border: none;
+  }
+  
+  .dropdown.active .dropdown-menu {
+    visibility: visible;
+    opacity: 1;
+    max-height: 300px;
+    margin-top: 0;
+    padding: 16px 0;
+  }
+  
+  .dropdown.active .arrow-icon {
+    transform: rotate(180deg);
+    border-top-color: var(--primary);
+  }
+  
+  .dropdown.active .nav-link {
+    color: var(--primary);
+  }
+  
+  .dropdown-item {
+    margin: 0;
+    padding: 12px 20px;
+    border-radius: 0;
+  }
+  
+  .hamburger {
+    display: flex;
+  }
+  
+  .btn-register, .btn-login {
+    width: 100%;
+    text-align: center;
+    margin-top: 16px;
+  }
+  
+  .nav-right {
+    flex-direction: column;
+    gap: 16px;
+    width: 100%;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar .container {
+    padding: 16px;
+  }
+  
+  .nav-brand .logo {
+    height: 50px;
+  }
+  
+  .nav-menu {
+    padding: 20px 16px;
+  }
+  
+  .nav-link {
+    font-size: 15px;
+    padding: 14px 0;
+  }
+  
+  .btn-register, .btn-login {
+    padding: 10px 24px;
+    font-size: 13px;
+  }
+}
+</style>
+
+<nav class="navbar">
+  <div class="container">
+    <div class="nav-brand">
+      <a routerLink="/">
+        <img [src]="site.assets.logoWide" [alt]="site.brandName + ' Logosu'" class="logo">
+      </a>
+    </div>
+    <div class="nav-center">
+      <ul class="nav-menu">
+        <li *ngIf="!auth.isAuthenticated()"><a routerLink="/hakkimizda" class="nav-link">Biz Kimiz</a></li>
+        <li class="dropdown" *ngIf="!auth.isAuthenticated()">
+          <a href="#" class="nav-link dropdown-toggle">Hizmetlerimiz <span class="arrow-icon"></span></a>
+          <div class="dropdown-menu">
+            <a routerLink="/yks-kocluk-hizmeti" class="dropdown-item">YKS Koçluk</a>
+            <a routerLink="/lgs-kocluk-hizmeti" class="dropdown-item">LGS Koçluk</a>
+            <a routerLink="/ucretsiz-danismanlik" class="dropdown-item">Ücretsiz Görüşme</a>
+            <a routerLink="/bize-katilin" class="dropdown-item">Bize Katıl</a>
+          </div>
+        </li>
+        <li *ngIf="!auth.isAuthenticated()"><a routerLink="/paketlerimiz" class="nav-link">Paketlerimiz</a></li>
+        <li *ngIf="!auth.isAuthenticated()"><a routerLink="/sikca-sorulan-sorular" class="nav-link">Sıkça Sorulan Sorular</a></li>
+        <li *ngIf="auth.isAuthenticated() && auth.isCoach()"><a routerLink="/coach/conversations" class="nav-link">Koç Paneli</a></li>
+        <li *ngIf="auth.isAuthenticated() && !auth.isCoach()"><a routerLink="/student/conversations" class="nav-link">Öğrenci Paneli</a></li>
+      </ul>
+    </div>
+    <div class="nav-right">
+      <a *ngIf="!auth.isAuthenticated()" routerLink="/account/register" style="text-decoration: none;" class="btn-register">Kayıt ol</a>
+      <a *ngIf="!auth.isAuthenticated()" routerLink="/account/login" style="text-decoration: none;" class="btn-login">Giriş Yap</a>
+      <a *ngIf="auth.isAuthenticated()" routerLink="/account/profile" style="text-decoration: none;" class="btn-register">Profil</a>
+      <button *ngIf="auth.isAuthenticated()" class="btn-login" (click)="auth.logout()">Çıkış</button>
+      <div class="hamburger">
+        <span></span><span></span><span></span>
+      </div>
+    </div>
+  </div>
+  </nav>
+
+<!-- Routed pages render here -->
+<div class="container" style="padding: 16px 20px;">
+  <router-outlet />
+</div>
+
+<!-- Floating Chat Widget (only when authenticated) -->
+<app-chat-widget *ngIf="auth.isAuthenticated()"></app-chat-widget>
+
+<!-- Footer (styled block from provided design) -->
+<style>
+.footer {
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--text-inverse);
+  position: relative;
+  overflow: hidden;
+  margin-top: 80px;
+}
+
+.footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="footerPattern" width="30" height="30" patternUnits="userSpaceOnUse"><circle cx="15" cy="15" r="1" fill="white" opacity="0.1"/><circle cx="45" cy="45" r="0.5" fill="white" opacity="0.05"/></pattern></defs><rect width="100" height="100" fill="url(%23footerPattern)"/></svg>');
+  opacity: 0.3;
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 80px 20px 0;
+  position: relative;
+  z-index: 2;
+}
+
+.footer-logo {
+  text-align: center;
+  margin-bottom: 60px;
+}
+
+.logo-container {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(15px);
+  border-radius: 24px;
+  padding: 24px 32px;
+  display: inline-block;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.logo-container:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.15);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.footer-content {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 40px 50px;
+  margin-bottom: 60px;
+}
+
+.footer-column h3 {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0 0 20px;
+  color: var(--text-inverse);
+  position: relative;
+}
+
+.footer-column h3::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 0;
+  width: 30px;
+  height: 3px;
+  background: rgba(255, 255, 255, 0.6);
+  border-radius: 2px;
+}
+
+.footer-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-column ul li {
+  margin: 0 0 16px;
+}
+
+.footer-column ul li a {
+  color: rgba(255, 255, 255, 0.8);
+  text-decoration: none;
+  font-size: 15px;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-block;
+  padding: 4px 0;
+  position: relative;
+}
+
+.footer-column ul li a:hover {
+  color: var(--text-inverse);
+  transform: translateX(8px);
+}
+
+.footer-column ul li a::before {
+  content: '';
+  position: absolute;
+  left: -12px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--text-inverse);
+  transition: width 0.3s ease;
+}
+
+.footer-column ul li a:hover::before {
+  width: 8px;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 30px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 30px;
+}
+
+.copyright p {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+}
+
+.social-links {
+  display: flex;
+  gap: 16px;
+}
+
+.social-link {
+  width: 48px;
+  height: 48px;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-inverse);
+  text-decoration: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  font-size: 18px;
+}
+
+.social-link:hover {
+  background: rgba(255, 255, 255, 0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+  border-color: rgba(255, 255, 255, 0.4);
+}
+
+/* Back to Top Button */
+#backToTop {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s ease;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%);
+  color: var(--text-inverse);
+  cursor: pointer;
+  box-shadow: var(--shadow-turquoise);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  z-index: 1000;
+}
+
+#backToTop.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+#backToTop:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--shadow-lg);
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .footer-content {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 40px 30px;
+  }
+}
+
+@media (max-width: 768px) {
+  .footer-container {
+    padding: 60px 20px 0;
+  }
+  
+  .footer-content {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 30px;
+  }
+  
+  .footer-bottom {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+  
+  .social-links {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .footer-container {
+    padding: 40px 16px 0;
+  }
+  
+  .footer-content {
+    grid-template-columns: 1fr;
+    gap: 30px;
+  }
+  
+  .footer-column h3 {
+    font-size: 18px;
+  }
+  
+  .footer-column ul li a {
+    font-size: 14px;
+  }
+  
+  .social-link {
+    width: 44px;
+    height: 44px;
+    font-size: 16px;
+  }
+  
+  #backToTop {
+    width: 48px;
+    height: 48px;
+    right: 16px;
+    bottom: 16px;
+    font-size: 18px;
+  }
+}
+
+/* Contact Section in Footer */
+.footer-column.contact .contact-item {
+  margin-bottom: 12px;
+}
+
+.footer-column.contact .contact-item a {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 600;
+}
+
+.footer-column.contact .contact-item a i {
+  font-size: 16px;
+  width: 20px;
+  text-align: center;
+}
+</style>
+
+<footer class="footer">
+  <div class="footer-container">
+    <div class="footer-logo">
+      <div class="logo-container"><img [src]="site.assets.logo" [alt]="site.brandName + ' Logo'" loading="lazy"></div>
+    </div>
+    <div class="footer-content">
+      <div class="footer-column"><h3>Kurumsal</h3><ul>
+        <li><a routerLink="/sozlesme/mesafeli-satis">Mesafeli Satış Sözleşmesi</a></li>
+        <li><a routerLink="/sozlesme/odeme-teslimat">Ödeme ve Teslimat</a></li>
+        <li><a routerLink="/sozlesme/gizlilik">Gizlilik Sözleşmesi</a></li>
+      </ul></div>
+      <div class="footer-column"><h3>Hizmetlerimiz</h3><ul>
+        <li><a routerLink="/yks-kocluk-hizmeti">YKS Koçluk</a></li>
+        <li><a routerLink="/lgs-kocluk-hizmeti">LGS Koçluk</a></li>
+        <li><a routerLink="/blog">Bloglarımız</a></li>
+      </ul></div>
+      <div class="footer-column"><h3>Hızlı Bağlantı</h3><ul>
+        <li><a routerLink="/">Ana Sayfa</a></li>
+        <li><a routerLink="/hakkimizda">Hakkımızda</a></li>
+        <li><a routerLink="/sikca-sorulan-sorular">SSS</a></li>
+      </ul></div>
+      <div class="footer-column"><h3>Talep & İletişim</h3><ul>
+        <li><a routerLink="/iletisim">İletişim</a></li>
+        <li><a routerLink="/ucretsiz-danismanlik">Ücretsiz Danışma</a></li>
+        <li><a routerLink="/bize-katilin">Bize Katıl</a></li>
+      </ul></div>
+      <div class="footer-column contact"><h3>Bize Ulaşın</h3>
+        <div class="contact-item"><a [href]="'tel:' + site.phone">{{ site.phoneDisplay }}</a></div>
+        <div class="contact-item"><a [href]="'mailto:' + site.email">{{ site.email }}</a></div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <div class="copyright"><p>{{ site.brandName }} © {{ today.getFullYear() }}. Tüm hakları saklıdır.</p></div>
+      <div class="social-links">
+        <a [href]="site.socials.instagram" class="social-link" aria-label="Instagram" target="_blank" rel="noopener"><i class="fab fa-instagram"></i></a>
+        <a [href]="site.socials.youtube" class="social-link" aria-label="YouTube" target="_blank" rel="noopener"><i class="fab fa-youtube"></i></a>
+        <a [href]="site.socials.linkedin" class="social-link" aria-label="LinkedIn" target="_blank" rel="noopener"><i class="fab fa-linkedin"></i></a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<!-- Back to top button -->
+<section class="back-to-top-section">
+  <button id="backToTop" class="back-to-top-btn" aria-label="Sayfanın üstüne dön">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M12 8l-6 6 1.41 1.41L12 10.83l4.59 4.58L18 14z"/></svg>
+  </button>
+</section>

@@ -1,0 +1,106 @@
+<!-- Students Management Page -->
+<section class="students-hero">
+  <div class="container">
+    <div class="students-header">
+      <h1>Öğrenci Yönetimi</h1>
+      <p>Öğrenci kayıtları ve bilgi yönetimi</p>
+    </div>
+  </div>
+</section>
+
+<section class="students-content">
+  <div class="container">
+    <!-- Add Student Form -->
+    <div class="add-student-form">
+      <h2>Yeni Öğrenci Ekle</h2>
+      <form (ngSubmit)="add()" class="student-form">
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Ad Soyad</mat-label>
+            <input matInput [(ngModel)]="newStudent.fullName" name="fullName" required />
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Telefon</mat-label>
+            <input matInput [(ngModel)]="newStudent.phone" name="phone" required />
+          </mat-form-field>
+        </div>
+        <div class="form-row">
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Okul</mat-label>
+            <mat-select [(ngModel)]="newStudent.school" name="school">
+              <mat-option *ngFor="let h of catalog.highSchools()" [value]="h.name">{{h.name}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field appearance="outline" class="form-field">
+            <mat-label>Hedef Puan</mat-label>
+            <input matInput type="number" [(ngModel)]="newStudent.targetScore" name="targetScore" />
+          </mat-form-field>
+        </div>
+        <div class="form-actions">
+          <button mat-flat-button color="primary" type="submit" class="btn-primary">
+            <span class="btn-icon">➕</span>
+            Öğrenci Ekle
+          </button>
+          <button mat-stroked-button type="button" (click)="load()" class="btn-secondary">
+            <span class="btn-icon">🔄</span>
+            Yenile
+          </button>
+          <a routerLink="/" class="btn-ghost">
+            <span class="btn-icon">🏠</span>
+            Dashboard
+          </a>
+        </div>
+      </form>
+      
+      <div *ngIf="errorMsg" class="error-message">
+        <span class="error-icon">⚠️</span>
+        {{ errorMsg }}
+      </div>
+    </div>
+
+    <!-- Students List -->
+    <div class="students-list">
+      <div class="list-header">
+        <h2>Öğrenci Listesi</h2>
+        <div class="list-stats">
+          <span class="stat-badge">Toplam: {{ students.length }}</span>
+        </div>
+      </div>
+      
+      <div class="students-container">
+        <cdk-virtual-scroll-viewport itemSize="80" class="virtual-scroll">
+          <div *cdkVirtualFor="let s of students; trackBy: trackById" class="student-item">
+            <div class="student-avatar">
+              <span class="avatar-text">{{ s.fullName.charAt(0) }}</span>
+            </div>
+            <div class="student-info">
+              <h3 class="student-name">{{ s.fullName }}</h3>
+              <div class="student-details">
+                <span class="detail-item">
+                  <span class="detail-icon">📞</span>
+                  {{ s.phone }}
+                </span>
+                <span class="detail-item">
+                  <span class="detail-icon">🏫</span>
+                  {{ s.school }}
+                </span>
+                <span class="detail-item">
+                  <span class="detail-icon">🎯</span>
+                  Hedef: {{ s.targetScore }} puan
+                </span>
+              </div>
+            </div>
+            <div class="student-actions">
+              <button mat-icon-button class="action-btn" title="Düzenle">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button class="action-btn" title="Sil">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </div>
+        </cdk-virtual-scroll-viewport>
+      </div>
+    </div>
+  </div>
+</section>

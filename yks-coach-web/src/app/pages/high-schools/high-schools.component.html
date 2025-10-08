@@ -1,0 +1,34 @@
+<h2>Liseler</h2>
+<div style="display:flex; gap:12px; align-items:center; flex-wrap:wrap;">
+  <mat-form-field appearance="outline" style="width:220px">
+    <mat-label>Şehir</mat-label>
+    <input matInput placeholder="Şehir" [ngModel]="city()" (ngModelChange)="city.set($event)">
+  </mat-form-field>
+  <mat-form-field appearance="outline" style="width:240px">
+    <mat-label>Tür</mat-label>
+    <mat-select [ngModel]="kind()" (ngModelChange)="kind.set($event)">
+      <mat-option [value]="''">Hepsi</mat-option>
+      <mat-option *ngFor="let k of kinds" [value]="k">{{k}}</mat-option>
+    </mat-select>
+  </mat-form-field>
+</div>
+
+<mat-table [dataSource]="data()" class="mat-elevation-z1">
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Lise </mat-header-cell>
+    <mat-cell *matCellDef="let h"> {{h.name}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="city">
+    <mat-header-cell *matHeaderCellDef> Şehir </mat-header-cell>
+    <mat-cell *matCellDef="let h"> {{h.city}} </mat-cell>
+  </ng-container>
+
+  <ng-container matColumnDef="kind">
+    <mat-header-cell *matHeaderCellDef> Tür </mat-header-cell>
+    <mat-cell *matCellDef="let h"> {{h.kind}} </mat-cell>
+  </ng-container>
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
