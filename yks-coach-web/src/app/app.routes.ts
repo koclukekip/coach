@@ -8,6 +8,20 @@ export const authGuard: CanActivateFn = () => {
   return (location.href = '/account/login') as unknown as boolean;
 };
 
+export const coachGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  if (!auth.requireAuth()) return (location.href = '/account/login') as unknown as boolean;
+  if (auth.isCoach()) return true;
+  return (location.href = '/student/conversations') as unknown as boolean;
+};
+
+export const studentGuard: CanActivateFn = () => {
+  const auth = inject(AuthService);
+  if (!auth.requireAuth()) return (location.href = '/account/login') as unknown as boolean;
+  if (!auth.isCoach()) return true;
+  return (location.href = '/coach/conversations') as unknown as boolean;
+};
+
 export const routes: Routes = [
   { path: '', title: 'Ana Sayfa | Derece Kampüsü', loadComponent: () => import('./pages/home/home.component').then(m => m.HomeComponent) },
   { path: 'students', loadComponent: () => import('./pages/students/students.component').then(m => m.StudentsComponent) },
@@ -28,8 +42,11 @@ export const routes: Routes = [
   { path: 'account/login', title: 'Giriş Yap | Derece Kampüsü', loadComponent: () => import('./pages/account/login/login.component').then(m => m.LoginComponent) },
   { path: 'account/register', title: 'Kayıt Ol | Derece Kampüsü', loadComponent: () => import('./pages/account/register/register.component').then(m => m.RegisterComponent) },
   { path: 'account/profile', title: 'Profilim | Derece Kampüsü', loadComponent: () => import('./pages/account/profile/profile.component').then(m => m.ProfileComponent) },
-  { path: 'coach/conversations', title: 'Koç Talepleri | Derece Kampüsü', canActivate: [authGuard], loadComponent: () => import('./pages/coach/coach-conversations.component').then(m => m.CoachConversationsComponent) },
-  { path: 'student/conversations', title: 'Taleplerim | Derece Kampüsü', canActivate: [authGuard], loadComponent: () => import('./pages/student/student-conversations.component').then(m => m.StudentConversationsComponent) },
+  { path: 'coach/conversations', title: 'Koç Talepleri | Derece Kampüsü', canActivate: [coachGuard], loadComponent: () => import('./pages/coach/conversations/coach-conversations.component').then(m => m.CoachConversationsComponent) },
+  { path: 'coach/students', title: 'Öğrenciler | Derece Kampüsü', canActivate: [coachGuard], loadComponent: () => import('./pages/coach/students/coach-students.component').then(m => m.CoachStudentsComponent) },
+  { path: 'coach/calendar', title: 'Takvim | Derece Kampüsü', canActivate: [coachGuard], loadComponent: () => import('./pages/coach/calendar/coach-calendar.component').then(m => m.CoachCalendarComponent) },
+  { path: 'coach/documents', title: 'Dokümanlar | Derece Kampüsü', canActivate: [coachGuard], loadComponent: () => import('./pages/coach/documents/coach-documents.component').then(m => m.CoachDocumentsComponent) },
+  { path: 'student/conversations', title: 'Taleplerim | Derece Kampüsü', canActivate: [studentGuard], loadComponent: () => import('./pages/student/student-conversations.component').then(m => m.StudentConversationsComponent) },
   { path: 'sozlesme/mesafeli-satis', title: 'Mesafeli Satış Sözleşmesi | Derece Kampüsü', loadComponent: () => import('./pages/sozlesme/mesafeli-satis/mesafeli-satis.component').then(m => m.MesafeliSatisComponent) },
   { path: 'sozlesme/odeme-teslimat', title: 'Ödeme ve Teslimat | Derece Kampüsü', loadComponent: () => import('./pages/sozlesme/odeme-teslimat/odeme-teslimat.component').then(m => m.OdemeTeslimatComponent) },
   { path: 'sozlesme/gizlilik', title: 'Gizlilik Sözleşmesi | Derece Kampüsü', loadComponent: () => import('./pages/sozlesme/gizlilik/gizlilik.component').then(m => m.GizlilikComponent) },

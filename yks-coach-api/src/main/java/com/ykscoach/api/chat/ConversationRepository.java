@@ -8,6 +8,7 @@ public interface ConversationRepository extends JpaRepository<Conversation, Long
     List<Conversation> findByCoachUsername(String coachUsername);
     List<Conversation> findByStudentUsername(String studentUsername);
     Optional<Conversation> findByIdAndCoachUsername(Long id, String coachUsername);
+    Optional<Conversation> findByCoachUsernameAndStudentUsername(String coachUsername, String studentUsername);
 }
 
 

@@ -1,0 +1,13 @@
+<section class="container" style="max-width:900px;margin:24px auto">
+  <h1>Dokümanlarım</h1>
+  <input type="file" (change)="onFile($event)"/>
+  <div style="margin-top:10px" *ngIf="err()" class="err">{{ err() }}</div>
+  <div style="margin-top:16px">
+    <div *ngFor="let d of docs()" style="display:flex;justify-content:space-between;align-items:center;border:1px solid #e5e7eb;border-radius:10px;padding:10px;margin:8px 0">
+      <div>{{ d.filename }}</div>
+      <a [href]="svc.downloadUrl(d.id)" class="btn">İndir</a>
+    </div>
+  </div>
+</section>
+
+

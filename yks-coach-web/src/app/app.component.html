@@ -585,6 +585,9 @@
         <li *ngIf="!auth.isAuthenticated()"><a routerLink="/paketlerimiz" class="nav-link">Paketlerimiz</a></li>
         <li *ngIf="!auth.isAuthenticated()"><a routerLink="/sikca-sorulan-sorular" class="nav-link">Sıkça Sorulan Sorular</a></li>
         <li *ngIf="auth.isAuthenticated() && auth.isCoach()"><a routerLink="/coach/conversations" class="nav-link">Koç Paneli</a></li>
+        <li *ngIf="auth.isAuthenticated() && auth.isCoach()"><a routerLink="/coach/students" class="nav-link">Öğrenciler</a></li>
+        <li *ngIf="auth.isAuthenticated() && auth.isCoach()"><a routerLink="/coach/calendar" class="nav-link">Takvim</a></li>
+        <li *ngIf="auth.isAuthenticated() && auth.isCoach()"><a routerLink="/coach/documents" class="nav-link">Dokümanlar</a></li>
         <li *ngIf="auth.isAuthenticated() && !auth.isCoach()"><a routerLink="/student/conversations" class="nav-link">Öğrenci Paneli</a></li>
       </ul>
     </div>

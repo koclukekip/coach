@@ -1,0 +1,41 @@
+<section class="container" style="max-width:900px;margin:24px auto">
+  <h1>Öğrencilerim</h1>
+  <form (ngSubmit)="assign()" style="display:flex;gap:8px;margin:8px 0">
+    <input name="student" [ngModel]="studentToAssign()" (ngModelChange)="studentToAssign.set($event)" placeholder="Öğrenci kullanıcı adı" style="flex:1;border:1px solid #e5e7eb;border-radius:8px;padding:8px"/>
+    <button class="btn btn-primary" type="submit">Ekle</button>
+  </form>
+  <div *ngFor="let s of students()" (click)="toggleChat(s.studentUsername)" style="border:1px solid #e5e7eb;border-radius:10px;padding:12px;margin:10px 0;cursor:pointer">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <div style="display:flex;align-items:center;gap:8px">
+        <span [style.background]="isStudentActiveNow(s.studentUsername) ? '#16a34a' : '#94a3b8'" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span>
+        <div style="font-weight:600">{{ s.studentUsername }}</div>
+        <span *ngIf="isStudentActiveNow(s.studentUsername)" style="font-size:12px;color:#16a34a">Aktif</span>
+      </div>
+    </div>
+    <div *ngIf="activeStudent()===s.studentUsername" style="margin-top:10px;border-top:1px solid #e5e7eb;padding-top:10px" (click)="$event.stopPropagation()">
+      <div #messagesBox style="max-height:300px;overflow:auto;display:flex;flex-direction:column;gap:8px;background:#f8fafc;padding:10px;border-radius:10px">
+        <ng-container *ngFor="let m of messages(); let i = index">
+          <div [style]="m.role==='user'? 'text-align:left' : 'text-align:right'">
+            <span style="display:inline-block;padding:8px 12px;border-radius:12px;max-width:80%" [style.background]="m.role==='coach'?'#e0f2fe':'#fff'" [style.border]="'1px solid #e5e7eb'">
+              {{ m.text }}
+              <div *ngIf="m.ts" style="font-size:11px;color:#64748b;margin-top:4px">{{ formatTs(m.ts) }}</div>
+            </span>
+          </div>
+        </ng-container>
+      </div>
+      <div *ngIf="isWithinActiveBookedWindow()" style="display:flex;gap:8px;margin-top:10px;align-items:center">
+        <button class="btn" type="button" (click)="toggleVideo()" style="border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px">🎥 Video</button>
+      </div>
+      <div *ngIf="videoActive() && isWithinActiveBookedWindow()" style="display:flex;gap:8px;margin-top:10px;align-items:flex-start">
+        <video [appMediaStream]="localStream()" muted playsinline style="width:45%;background:#000;border-radius:8px"></video>
+        <video [appMediaStream]="remoteStream()" playsinline style="width:55%;background:#000;border-radius:8px"></video>
+      </div>
+      <form (ngSubmit)="send()" style="display:flex;gap:8px;margin-top:10px">
+        <input name="msg" [ngModel]="draft()" (ngModelChange)="draft.set($event)" placeholder="Mesaj yazın..." style="flex:1;border:1px solid #e5e7eb;border-radius:10px;padding:10px"/>
+        <button class="btn btn-primary" type="submit" style="background:#36786b;color:#fff;border:none;border-radius:10px;padding:10px 14px">Gönder</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+

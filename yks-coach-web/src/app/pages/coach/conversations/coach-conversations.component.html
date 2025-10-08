@@ -1,0 +1,31 @@
+<section class="container" style="max-width:1000px;margin:24px auto">
+  <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+    <div style="flex:1;min-width:320px;border:1px solid #e5e7eb;border-radius:10px;padding:10px">
+      <div style="font-weight:700;margin-bottom:8px">Bugünkü Oturumlar</div>
+      <div *ngIf="todaySlots().length===0" style="font-size:12px;color:#64748b">Bugün planlı oturum yok.</div>
+      <div *ngFor="let sl of todaySlots()" style="display:flex;justify-content:space-between;align-items:center;border:1px solid #e5e7eb;border-radius:8px;padding:8px;margin:6px 0">
+        <div>
+          <div style="font-weight:600">{{ sl.title || 'Oturum' }}</div>
+          <div style="font-size:12px;color:#64748b">{{ formatRange(sl.start, sl.end) }}</div>
+        </div>
+      </div>
+    </div>
+    <div style="flex:1;min-width:320px;border:1px solid #e5e7eb;border-radius:10px;padding:10px">
+      <div style="font-weight:700;margin-bottom:8px">Bekleyen Talepler</div>
+      <ng-container *ngFor="let c of pendingConversations()">
+        <div *ngIf="c.status==='PENDING'" style="border:1px dashed #e5e7eb;border-radius:8px;padding:8px;margin:6px 0">
+          <div style="display:flex;justify-content:space-between;align-items:center">
+            <div>Öğrenci: {{ c.studentUsername }}</div>
+            <button class="btn btn-primary" (click)="accept(c)">Kabul Et</button>
+          </div>
+        </div>
+      </ng-container>
+      <div *ngIf="pendingConversations().length === 0" style="font-size:12px;color:#64748b">Bekleyen talep yok.</div>
+    </div>
+  </div>
+  <div *ngIf="nextBooked()" style="margin:16px 0;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#f0fdf4;color:#166534">
+    Sonraki oturum: {{ formatRange(nextBooked()!.start, nextBooked()!.end) }}
+  </div>
+</section>
+
+

@@ -12,6 +12,7 @@ export class WebRtcService {
   localStream = signal<MediaStream | null>(null);
   remoteStream = signal<MediaStream | null>(null);
   private currentUsername: string | null = null;
+  private stopTimer?: any;
 
   constructor(private auth: AuthService) {
     const token = this.auth.token;
@@ -23,6 +24,9 @@ export class WebRtcService {
     await this.ensureStreams();
     this.subscribe(conversationId);
     await this.createAndSendOffer(conversationId);
+    // Auto-timeout to avoid long-lived connections
+    clearTimeout(this.stopTimer);
+    this.stopTimer = setTimeout(() => { try { this.stop(); } catch {} }, 1000 * 60 * 30); // 30 minutes max
   }
 
   async accept(conversationId: number): Promise<void> {
@@ -32,6 +36,7 @@ export class WebRtcService {
   }
 
   stop(): void {
+    try { clearTimeout(this.stopTimer); } catch {}
     try { this.subscribedConvId = null; } catch {}
     try { this.pc?.close(); } catch {}
     this.pc = undefined;
@@ -73,6 +78,7 @@ export class WebRtcService {
         const SockJS = (mod as any).default || (mod as any);
         const socket = new SockJS('/ws');
         this.stomp = StompJs.Stomp.over(socket as any);
+        this.stomp.reconnectDelay = 0; // no auto-reconnect, keep session short-lived
         const token = this.auth.token || undefined;
         if (token) this.currentUsername = this.parseUsernameFromToken(token);
         const headers = token ? { Authorization: `Bearer ${token}` } : {} as any;

@@ -10,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 @CrossOrigin
 public class CoachAssignmentController {
     private final CoachAssignmentRepository assignments;
+    private final com.ykscoach.api.chat.ConversationRepository conversations;
 
-    public CoachAssignmentController(CoachAssignmentRepository assignments) {
+    public CoachAssignmentController(CoachAssignmentRepository assignments, com.ykscoach.api.chat.ConversationRepository conversations) {
         this.assignments = assignments;
+        this.conversations = conversations;
     }
 
     @GetMapping("/my-students")
@@ -37,6 +39,16 @@ public class CoachAssignmentController {
         a.setStudentUsername(req.studentUsername());
         a.setCoachUsername(coach);
         assignments.save(a);
+        // ensure conversation exists and accepted
+        var conv = conversations.findByCoachUsernameAndStudentUsername(coach, req.studentUsername())
+            .orElseGet(() -> {
+                var c = new com.ykscoach.api.chat.Conversation();
+                c.setCoachUsername(coach);
+                c.setStudentUsername(req.studentUsername());
+                return conversations.save(c);
+            });
+        conv.setStatus(com.ykscoach.api.chat.Conversation.Status.ACCEPTED);
+        conversations.save(conv);
         return ResponseEntity.ok(a);
     }
 }
