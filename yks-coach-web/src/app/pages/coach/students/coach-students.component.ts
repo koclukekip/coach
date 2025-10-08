@@ -24,10 +24,18 @@ export class CoachStudentsComponent {
   activeStudent = signal<string | null>(null);
   videoActive = signal(false);
   slots = signal<ScheduleSlot[]>([]);
+  presenceMap = signal<Record<string, boolean>>({});
   constructor(private assignmentSrv: CoachAssignmentService, private chat: ChatService, private conv: ConversationService, public rtc: WebRtcService, private schedule: ScheduleService, private presence: PresenceClient) {
-    this.assignmentSrv.myStudents().subscribe(list => this.students.set(list));
+    this.assignmentSrv.myStudents().subscribe(list => { this.students.set(list); this.refreshPresence(); });
     this.chat.messages$.subscribe(ms => this.messages.set(ms));
     this.presence.start();
+    // Periyodik presence yenilemesi
+    setInterval(() => this.refreshPresence(), 30000);
+  }
+  private refreshPresence(): void {
+    const users = this.students().map(s => s.studentUsername);
+    if (!users.length) return;
+    this.presence.batch(users).subscribe(map => this.presenceMap.set(map));
   }
   assign() {
     const username = this.studentToAssign().trim(); if (!username) return;
@@ -78,7 +86,7 @@ export class CoachStudentsComponent {
     return this.slots().some(sl => sl.status === 'BOOKED' && now >= Date.parse(sl.start) && now <= Date.parse(sl.end));
   }
   isStudentActiveNow(studentUsername: string): boolean {
-    return this.activeStudent() === studentUsername && this.isWithinActiveBookedWindow();
+    return !!this.presenceMap()[studentUsername];
   }
   formatTs(ts?: number): string {
     if (!ts) return '';

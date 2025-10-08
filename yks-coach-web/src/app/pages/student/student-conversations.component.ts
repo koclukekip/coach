@@ -6,6 +6,7 @@ import { ChatService } from 'app/services/chat.service';
 import { WebRtcService } from 'app/services/webrtc.service';
 import { MediaStreamModule } from 'app/directives/media-stream.module';
 import { ScheduleService, ScheduleSlot } from 'app/services/schedule.service';
+import { PresenceClient } from 'app/services/profile.service';
  
 
 @Component({
@@ -22,13 +23,16 @@ export class StudentConversationsComponent {
   messages = signal<{ role: 'user'|'coach'; text: string; ts?: number }[]>([]);
   draft = signal('');
   activeId = signal<number | null>(null);
-  constructor(private conv: ConversationService, private chat: ChatService, public rtc: WebRtcService, private schedule: ScheduleService) {
+  presence = signal<Record<string, boolean>>({});
+  constructor(private conv: ConversationService, private chat: ChatService, public rtc: WebRtcService, private schedule: ScheduleService, private presenceClient: PresenceClient) {
     this.refresh();
     this.chat.messages$.subscribe(ms => { this.messages.set(ms); this.safeScrollToBottom(); });
+    this.presenceClient.start();
   }
   refresh() {
     this.conv.mine('student').subscribe(list => {
       this.convs.set(list);
+      this.refreshPresence();
       // Prefer last active conversation if stored and present
       if (!this.activeId()) {
         let lastId: number | null = null;
@@ -43,6 +47,11 @@ export class StudentConversationsComponent {
         if (firstAccepted) this.open(firstAccepted);
       }
     });
+  }
+  private refreshPresence(): void {
+    const coaches = Array.from(new Set(this.convs().map(c => c.coachUsername)));
+    if (!coaches.length) return;
+    this.presenceClient.batch(coaches).subscribe(map => this.presence.set(map));
   }
   request() { this.conv.request(this.coach()).subscribe(() => { this.coach.set(''); this.refresh(); }); }
   open(c: Conversation) {
@@ -86,7 +95,9 @@ export class StudentConversationsComponent {
   }
 
   toggle(c: Conversation, ev?: Event) { this.openIfClosed(c, ev); }
-  isCoachActiveNow(c: Conversation): boolean { return this.activeId()===c.id && this.isWithinActiveBookedWindow(); }
+  isCoachActiveNow(c: Conversation): boolean {
+    return !!this.presence()[c.coachUsername];
+  }
 
   // Scheduling state and helpers
   slots = signal<ScheduleSlot[]>([]);
