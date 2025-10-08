@@ -44,6 +44,14 @@ public class ScheduleController {
         }).orElse(ResponseEntity.status(404).build());
     }
 
+    // Public coach availability across all students (only OPEN)
+    @GetMapping("/coach/{coachUsername}/open")
+    public List<ScheduleSlot> openForCoach(@PathVariable String coachUsername) {
+        return slots.findAllForCoach(coachUsername).stream()
+                .filter(s -> s.getStatus() == ScheduleSlot.Status.OPEN)
+                .toList();
+    }
+
     @PostMapping("/conversations/{conversationId}/slots")
     public ResponseEntity<?> create(Principal principal, @PathVariable Long conversationId, @RequestBody CreateSlotRequest req) {
         return conversations.findById(conversationId).map(c -> {
@@ -53,6 +61,21 @@ public class ScheduleController {
             sl.setStart(Instant.parse(req.start()));
             sl.setEnd(Instant.parse(req.end()));
             sl.setStatus(ScheduleSlot.Status.OPEN);
+            sl.setTitle(req.title());
+            return ResponseEntity.ok(slots.save(sl));
+        }).orElse(ResponseEntity.status(404).build());
+    }
+
+    // Student requests a new slot for a conversation
+    @PostMapping("/conversations/{conversationId}/request")
+    public ResponseEntity<?> requestSlot(Principal principal, @PathVariable Long conversationId, @RequestBody CreateSlotRequest req) {
+        return conversations.findById(conversationId).map(c -> {
+            if (!principal.getName().equals(c.getStudentUsername())) return ResponseEntity.status(403).build();
+            ScheduleSlot sl = new ScheduleSlot();
+            sl.setConversationId(conversationId);
+            sl.setStart(Instant.parse(req.start()));
+            sl.setEnd(Instant.parse(req.end()));
+            sl.setStatus(ScheduleSlot.Status.REQUESTED);
             sl.setTitle(req.title());
             return ResponseEntity.ok(slots.save(sl));
         }).orElse(ResponseEntity.status(404).build());
@@ -79,7 +102,8 @@ public class ScheduleController {
             sl.setConversationId(conv.getId());
             sl.setStart(Instant.parse(req.start()));
             sl.setEnd(Instant.parse(req.end()));
-            sl.setStatus(ScheduleSlot.Status.OPEN);
+            // coach-created meetings are immediately booked/reserved
+            sl.setStatus(ScheduleSlot.Status.BOOKED);
             sl.setTitle(req.title());
             return ResponseEntity.ok(slots.save(sl));
         } catch (Exception e) {
@@ -106,6 +130,28 @@ public class ScheduleController {
             sl.setStatus(ScheduleSlot.Status.CANCELLED);
             slots.save(sl);
             return ResponseEntity.ok().build();
+        }).orElse(ResponseEntity.status(404).build())).orElse(ResponseEntity.status(404).build());
+    }
+
+    // Coach approves a REQUESTED slot -> becomes BOOKED
+    @PostMapping("/slots/{slotId}/approve")
+    public ResponseEntity<?> approve(Principal principal, @PathVariable Long slotId) {
+        return slots.findById(slotId).map(sl -> conversations.findById(sl.getConversationId()).map(c -> {
+            if (!principal.getName().equals(c.getCoachUsername())) return ResponseEntity.status(403).build();
+            if (sl.getStatus() != ScheduleSlot.Status.REQUESTED) return ResponseEntity.status(409).build();
+            sl.setStatus(ScheduleSlot.Status.BOOKED);
+            return ResponseEntity.ok(slots.save(sl));
+        }).orElse(ResponseEntity.status(404).build())).orElse(ResponseEntity.status(404).build());
+    }
+
+    // Coach rejects a REQUESTED slot -> becomes REJECTED
+    @PostMapping("/slots/{slotId}/reject")
+    public ResponseEntity<?> reject(Principal principal, @PathVariable Long slotId) {
+        return slots.findById(slotId).map(sl -> conversations.findById(sl.getConversationId()).map(c -> {
+            if (!principal.getName().equals(c.getCoachUsername())) return ResponseEntity.status(403).build();
+            if (sl.getStatus() != ScheduleSlot.Status.REQUESTED) return ResponseEntity.status(409).build();
+            sl.setStatus(ScheduleSlot.Status.REJECTED);
+            return ResponseEntity.ok(slots.save(sl));
         }).orElse(ResponseEntity.status(404).build())).orElse(ResponseEntity.status(404).build());
     }
 

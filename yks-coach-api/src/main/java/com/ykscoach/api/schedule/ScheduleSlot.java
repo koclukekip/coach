@@ -26,7 +26,7 @@ public class ScheduleSlot {
     @Column
     private String title;
 
-    public enum Status { OPEN, BOOKED, CANCELLED }
+    public enum Status { OPEN, REQUESTED, BOOKED, REJECTED, CANCELLED }
 
     public Long getId() { return id; }
     public Long getConversationId() { return conversationId; }

@@ -50,6 +50,16 @@ public class DocumentController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(d.getContent());
     }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(Principal principal, @PathVariable Long id) {
+        var opt = docs.findById(id);
+        if (opt.isEmpty()) return ResponseEntity.notFound().build();
+        var d = opt.get();
+        if (principal == null || !principal.getName().equals(d.getOwnerUsername())) return ResponseEntity.status(403).build();
+        docs.deleteById(id);
+        return ResponseEntity.noContent().build();
+    }
 }
 
 
