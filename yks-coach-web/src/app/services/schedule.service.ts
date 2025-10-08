@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
-export type SlotStatus = 'OPEN' | 'BOOKED' | 'CANCELLED';
+export type SlotStatus = 'OPEN' | 'REQUESTED' | 'BOOKED' | 'REJECTED' | 'CANCELLED';
 
 export interface ScheduleSlot {
   id: number;
@@ -25,6 +25,11 @@ export class ScheduleService {
     return this.http.post<ScheduleSlot>(`/api/schedule/conversations/${conversationId}/slots`, { start: startIso, end: endIso, title });
   }
 
+  // Student requests a slot (awaiting coach approval)
+  request(conversationId: number, startIso: string, endIso: string, title?: string): Observable<ScheduleSlot> {
+    return this.http.post<ScheduleSlot>(`/api/schedule/conversations/${conversationId}/request`, { start: startIso, end: endIso, title });
+  }
+
   listForCoach(): Observable<ScheduleSlot[]> {
     return this.http.get<ScheduleSlot[]>(`/api/schedule/coach`);
   }
@@ -39,6 +44,20 @@ export class ScheduleService {
 
   cancel(slotId: number): Observable<void> {
     return this.http.post<void>(`/api/schedule/slots/${slotId}/cancel`, {});
+  }
+
+  // Coach actions
+  approve(slotId: number): Observable<ScheduleSlot> {
+    return this.http.post<ScheduleSlot>(`/api/schedule/slots/${slotId}/approve`, {});
+  }
+
+  reject(slotId: number): Observable<ScheduleSlot> {
+    return this.http.post<ScheduleSlot>(`/api/schedule/slots/${slotId}/reject`, {});
+  }
+
+  // Public coach availability (OPEN only)
+  listCoachOpen(coachUsername: string): Observable<ScheduleSlot[]> {
+    return this.http.get<ScheduleSlot[]>(`/api/schedule/coach/${encodeURIComponent(coachUsername)}/open`);
   }
 }
 

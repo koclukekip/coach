@@ -1,6 +1,28 @@
 <section class="container" style="max-width:1000px;margin:24px auto">
   <h1>Takvim</h1>
-  <canvas #calCanvas width="960" height="600" style="width:100%;border:1px solid #e5e7eb;border-radius:12px" (click)="onCanvasClick($event)"></canvas>
+  <div style="display:flex;gap:8px;align-items:center;justify-content:space-between;margin:8px 0 12px">
+    <div style="display:flex;gap:8px;align-items:center">
+      <button class="btn" (click)="prevWeek()">‹ Önceki</button>
+      <button class="btn" (click)="thisWeek()">Bugün/Hafta</button>
+      <button class="btn" (click)="nextWeek()">Sonraki ›</button>
+      <span style="font-weight:600;color:#334155;margin-left:8px">{{ weekRangeLabel() }}</span>
+    </div>
+    <div>
+      <input #datePick type="date" (change)="onDatePicked(datePick.value)"/>
+    </div>
+  </div>
+  <canvas #calCanvas width="960" height="600" style="width:100%;border:1px solid #e5e7eb;border-radius:12px" (click)="onCanvasClick($event)" (mousemove)="onCanvasMove($event)" (mouseleave)="onCanvasLeave()"></canvas>
+  <!-- Requested slots list and actions -->
+  <div style="margin-top:12px;display:flex;flex-wrap:wrap;gap:8px">
+    <ng-container *ngFor="let sl of slots()">
+      <div *ngIf="sl.status==='REQUESTED'" (click)="$event.stopPropagation()" style="border:1px solid #e5e7eb;border-radius:10px;padding:10px 12px;background:#fff;display:flex;align-items:center;gap:10px;cursor:pointer">
+        <span style="font-weight:800;font-size:14px">Randevu Talebi</span>
+        <span style="font-weight:600">{{ sl.title || 'Randevu' }}</span>
+        <span style="font-size:12px;color:#64748b">{{ (sl.start | date:'short') }} - {{ (sl.end | date:'shortTime') }}</span>
+        <button class="btn" (click)="openDecision(sl)">Karar Ver</button>
+      </div>
+    </ng-container>
+  </div>
   <div *ngIf="showPopup()" style="position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center">
     <div style="background:#fff;border-radius:12px;padding:16px;min-width:320px;border:1px solid #e5e7eb">
       <h3 style="margin-top:0">Yeni Toplantı</h3>
@@ -16,6 +38,22 @@
       <div style="display:flex;gap:8px;justify-content:flex-end;margin-top:12px">
         <button class="btn" (click)="closePopup()">İptal</button>
         <button class="btn btn-primary" (click)="createSlot()" [disabled]="!selectedStudent() || saving()">{{ saving() ? 'Kaydediliyor…' : 'Oluştur' }}</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Decision modal for REQUESTED slots -->
+  <div *ngIf="showDecision()" style="position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center">
+    <div style="background:#fff;border-radius:12px;padding:16px;min-width:360px;border:1px solid #e5e7eb">
+      <h3 style="margin-top:0">Randevu Talebi</h3>
+      <div *ngIf="selectedSlot()" style="margin-bottom:10px;color:#334155">
+        <div style="font-weight:600">{{ selectedSlot()!.title || 'Randevu' }}</div>
+        <div style="font-size:12px;color:#64748b">{{ (selectedSlot()!.start | date:'short') }} - {{ (selectedSlot()!.end | date:'shortTime') }}</div>
+      </div>
+      <div style="display:flex;gap:8px;justify-content:flex-end">
+        <button class="btn" (click)="closeDecision()">Kapat</button>
+        <button class="btn" *ngIf="selectedSlot() && selectedSlot()!.status==='REQUESTED'" (click)="rejectSelected()">Reddet</button>
+        <button class="btn btn-primary" *ngIf="selectedSlot() && selectedSlot()!.status==='REQUESTED'" (click)="approveSelected()">Onayla</button>
       </div>
     </div>
   </div>

@@ -1,4 +1,4 @@
-import { Component, signal, ViewChild, ElementRef } from '@angular/core';
+import { Component, signal, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ConversationService, Conversation } from 'app/services/conversation.service';
@@ -6,6 +6,7 @@ import { ChatService } from 'app/services/chat.service';
 import { WebRtcService } from 'app/services/webrtc.service';
 import { MediaStreamModule } from 'app/directives/media-stream.module';
 import { ScheduleService, ScheduleSlot } from 'app/services/schedule.service';
+import { forkJoin } from 'rxjs';
 import { PresenceClient } from 'app/services/profile.service';
  
 
@@ -16,7 +17,7 @@ import { PresenceClient } from 'app/services/profile.service';
   templateUrl: './student-conversations.component.html',
   styleUrl: './student-conversations.component.scss'
 })
-export class StudentConversationsComponent {
+export class StudentConversationsComponent implements OnDestroy {
   @ViewChild('messagesBox') messagesBox?: ElementRef<HTMLDivElement>;
   convs = signal<Conversation[]>([]);
   coach = signal('');
@@ -26,8 +27,30 @@ export class StudentConversationsComponent {
   presence = signal<Record<string, boolean>>({});
   constructor(private conv: ConversationService, private chat: ChatService, public rtc: WebRtcService, private schedule: ScheduleService, private presenceClient: PresenceClient) {
     this.refresh();
-    this.chat.messages$.subscribe(ms => { this.messages.set(ms); this.safeScrollToBottom(); });
+    this.chat.messages$.subscribe(ms => {
+      this.messages.set(ms);
+      this.safeScrollToBottom();
+      // auto mark read when a new coach message arrives and a conversation is active
+      const id = this.activeId();
+      if (!id || ms.length === 0) return;
+      const last = ms[ms.length - 1];
+      if (last.role === 'coach') {
+        this.conv.markRead(id, 'student').subscribe();
+      }
+    });
     this.presenceClient.start();
+    // initialize current month bounds and default selected date
+    const now = new Date();
+    const start = new Date(now.getFullYear(), now.getMonth(), 1);
+    const end = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+    const toYmd = (d: Date) => `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    this.monthStart.set(toYmd(start));
+    this.monthEnd.set(toYmd(end));
+    this.selectedDate.set(toYmd(now));
+  }
+  ngOnDestroy(): void {
+    try { this.presenceClient.stop(); } catch {}
+    try { this.rtc.stop(); } catch {}
   }
   refresh() {
     this.conv.mine('student').subscribe(list => {
@@ -64,6 +87,8 @@ export class StudentConversationsComponent {
       const mapped = list.map(m => ({ role: m.from === me ? 'user' : 'coach', text: m.text, ts: Date.parse(m.createdAt) }));
       this.chat.replaceMessages(mapped as any);
       this.safeScrollToBottom();
+      // mark read for student
+      this.conv.markRead(c.id, 'student').subscribe();
     });
     this.loadSlots();
   }
@@ -102,14 +127,29 @@ export class StudentConversationsComponent {
   // Scheduling state and helpers
   slots = signal<ScheduleSlot[]>([]);
   nextBooked = signal<ScheduleSlot | null>(null);
+  selectedDate = signal<string>(''); // yyyy-MM-dd
+  monthStart = signal<string>('');   // yyyy-MM-dd
+  monthEnd = signal<string>('');     // yyyy-MM-dd
 
   private loadSlots(): void {
     const id = this.activeId();
     if (!id) return;
-    this.schedule.list(id).subscribe(list => {
-      this.slots.set(list);
-      this.computeNextBooked();
-    });
+    const conv = this.convs().find(c => c.id === id);
+    if (conv) {
+      forkJoin({ own: this.schedule.list(id), open: this.schedule.listCoachOpen(conv.coachUsername) }).subscribe(({ own, open }) => {
+        const byId = new Map<number, ScheduleSlot>();
+        for (const s of own) byId.set(s.id, s);
+        for (const s of open) if (!byId.has(s.id)) byId.set(s.id, s);
+        const merged = Array.from(byId.values()).sort((a,b)=>a.start.localeCompare(b.start));
+        this.slots.set(merged);
+        this.computeNextBooked();
+      });
+    } else {
+      this.schedule.list(id).subscribe(list => {
+        this.slots.set(list);
+        this.computeNextBooked();
+      });
+    }
   }
 
   bookSlot(slotId: number): void {
@@ -117,6 +157,86 @@ export class StudentConversationsComponent {
       this.slots.set(this.slots().map(s => s.id === updated.id ? updated : s));
       this.computeNextBooked();
     });
+  }
+
+  // Student requests a new slot (await coach approval)
+  requestSlot(startInput: string, endInput: string, title?: string): void {
+    const id = this.activeId(); if (!id) return;
+    // convert possible datetime-local values to ISO
+    const startIso = new Date(startInput).toISOString();
+    const endIso = new Date(endInput).toISOString();
+    this.schedule.request(id, startIso, endIso, title).subscribe(sl => {
+      this.slots.set([...this.slots(), sl]);
+      this.computeNextBooked();
+    });
+  }
+
+  // Build 30-min grid for selected day. States:
+  // - 'open': overlaps coach OPEN slot
+  // - 'blocked': overlaps BOOKED or REQUESTED
+  // - 'requestable': no overlap; student may request
+  dayGrid(): { start: string; end: string; label: string; state: 'open'|'blocked'|'requestable' }[] {
+    const dateStr = this.selectedDate();
+    if (!dateStr) return [];
+    // Coach availability window: 08:00 through 22:30
+    const businessStartHour = 8;
+    const businessEndHour = 22; // we'll include 22:30 via minutes loop
+    const day = new Date(dateStr + 'T00:00:00');
+    const blocks: { start: string; end: string; label: string; state: 'open'|'blocked'|'requestable' }[] = [];
+    for (let h = businessStartHour; h <= businessEndHour; h++) {
+      const minutesArr = h === businessEndHour ? [0, 30] : [0, 30];
+      for (const m of minutesArr) {
+        if (h === businessEndHour && m > 30) continue; // cap at 22:30
+        const s = new Date(day); s.setHours(h, m, 0, 0);
+        const e = new Date(s); e.setMinutes(s.getMinutes() + 30);
+        const startIso = s.toISOString();
+        const endIso = e.toISOString();
+        const label = `${s.toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' })} - ${e.toLocaleTimeString('tr-TR', { hour:'2-digit', minute:'2-digit' })}`;
+        // determine state by overlap with existing slots
+        // default policy: everything is open unless blocked by BOOKED/REQUESTED
+        let state: 'open'|'blocked'|'requestable' = 'open';
+        const os = s.getTime(); const oe = e.getTime();
+        for (const sl of this.slots()) {
+          const ss = Date.parse(sl.start); const se = Date.parse(sl.end);
+          const overlaps = os < se && oe > ss;
+          if (!overlaps) continue;
+          if (sl.status === 'BOOKED' || sl.status === 'REQUESTED') { state = 'blocked'; break; }
+        }
+        blocks.push({ start: startIso, end: endIso, label, state });
+      }
+    }
+    return blocks;
+  }
+
+  requestHalfHour(startIso: string, endIso: string): void {
+    const id = this.activeId(); if (!id) return;
+    // prevent duplicate/overlapping request if already REQUESTED/BOOKED exists for interval
+    const sMs = Date.parse(startIso), eMs = Date.parse(endIso);
+    const overlapsExisting = this.slots().some(sl => {
+      if (sl.status === 'BOOKED' || sl.status === 'REQUESTED') {
+        const ss = Date.parse(sl.start), se = Date.parse(sl.end);
+        return sMs < se && eMs > ss;
+      }
+      return false;
+    });
+    if (overlapsExisting) return;
+    this.schedule.request(id, startIso, endIso, 'Randevu Talebi').subscribe(sl => {
+      this.slots.set([...this.slots(), sl]);
+      this.computeNextBooked();
+    });
+  }
+
+  onDateChange(val: string): void {
+    const start = this.monthStart(); const end = this.monthEnd();
+    if (!val) { this.selectedDate.set(start); return; }
+    const clamped = val < start ? start : (val > end ? end : val);
+    this.selectedDate.set(clamped);
+    // refresh slots to reflect latest coach availability
+    this.loadSlots();
+  }
+
+  hasOpenBlocks(): boolean {
+    return this.dayGrid().some(b => b.state === 'open');
   }
 
   isWithinActiveBookedWindow(): boolean {

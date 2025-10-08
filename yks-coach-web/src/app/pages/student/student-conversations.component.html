@@ -43,6 +43,40 @@
       <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
         <button class="btn" type="button" (click)="toggleVideo()" *ngIf="isWithinActiveBookedWindow()" style="border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px">🎥 Video</button>
       </div>
+      <!-- Scheduling section -->
+      <div style="margin-top:12px;padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:#fafafa">
+        <div style="font-weight:600;margin-bottom:8px">Randevu Planlama</div>
+        <!-- Day picker and 30-min availability -->
+        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
+          <input type="date" [min]="monthStart()" [max]="monthEnd()" [value]="selectedDate()" (change)="onDateChange($any($event.target).value)" style="border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px" />
+        </div>
+        <div *ngIf="selectedDate()" style="display:flex;flex-wrap:wrap;gap:8px">
+          <ng-container *ngFor="let b of dayGrid()">
+            <button *ngIf="b.state==='open'" type="button" (click)="requestHalfHour(b.start, b.end)" style="border:1px solid #bae6fd;border-radius:10px;padding:6px 10px;background:#e0f2fe;cursor:pointer">
+              {{ b.label }}
+            </button>
+          </ng-container>
+          <div *ngIf="!hasOpenBlocks()" style="color:#94a3b8;font-size:13px">Seçili günde uygun 30 dk aralığı yok.</div>
+        </div>
+
+        <!-- Existing slots list (status badges) -->
+        <div *ngIf="slots().length" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
+          <div *ngFor="let sl of slots()" style="display:flex;justify-content:space-between;align-items:center;border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px;background:#fff">
+            <div>
+              <div style="font-weight:600">{{ sl.title || 'Randevu' }}</div>
+              <div style="font-size:12px;color:#64748b">{{ formatRange(sl.start, sl.end) }}</div>
+            </div>
+            <div>
+              <span *ngIf="sl.status==='OPEN'" style="font-size:12px;color:#0284c7;background:#e0f2fe;border:1px solid #bae6fd;border-radius:999px;padding:4px 8px">Açık</span>
+              <span *ngIf="sl.status==='REQUESTED'" style="font-size:12px;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:999px;padding:4px 8px">Onay bekliyor</span>
+              <span *ngIf="sl.status==='BOOKED'" style="font-size:12px;color:#166534;background:#dcfce7;border:1px solid #bbf7d0;border-radius:999px;padding:4px 8px">Rezerve edildi</span>
+              <span *ngIf="sl.status==='REJECTED'" style="font-size:12px;color:#991b1b;background:#fee2e2;border:1px solid #fecaca;border-radius:999px;padding:4px 8px">Reddedildi</span>
+              <span *ngIf="sl.status==='CANCELLED'" style="font-size:12px;color:#475569;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:4px 8px">İptal edildi</span>
+            </div>
+          </div>
+        </div>
+        <div *ngIf="!slots().length" style="margin-top:10px;color:#94a3b8;font-size:13px">Henüz bir randevu yok.</div>
+      </div>
       <div *ngIf="videoActive()" style="display:flex;gap:8px;margin-top:10px;align-items:flex-start">
         <video [appMediaStream]="localStream()" muted playsinline style="width:45%;background:#000;border-radius:8px"></video>
         <video [appMediaStream]="remoteStream()" playsinline style="width:55%;background:#000;border-radius:8px"></video>
