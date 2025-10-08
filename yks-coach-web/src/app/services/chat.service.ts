@@ -5,6 +5,7 @@ import * as StompJs from '@stomp/stompjs';
 import { AuthService } from 'app/services/auth.service';
 
 export interface ChatMessage {
+  id?: string;
   role: 'user' | 'coach';
   text: string;
   ts?: number;
@@ -20,7 +21,7 @@ export class ChatService {
   send(text: string): void {
     const now = Date.now();
     const current = this._messages.value;
-    const next: ChatMessage[] = [...current, { role: 'user', text, ts: now }];
+    const next: ChatMessage[] = [...current, { id: `user_${now}`, role: 'user', text, ts: now }];
     this._messages.next(next as ChatMessage[]);
     this.persistActiveMessages();
 
@@ -99,7 +100,8 @@ export class ChatService {
         const data = JSON.parse(msg.body) as { text: string; from: string };
         const role: 'user' | 'coach' = (this.currentUsername && data.from === this.currentUsername) ? 'user' : 'coach';
         if (role === 'coach') {
-          const updated: ChatMessage[] = [...this._messages.value, { role, text: data.text, ts: Date.now() }];
+          const now = Date.now();
+          const updated: ChatMessage[] = [...this._messages.value, { id: `coach_${now}`, role, text: data.text, ts: now }];
           this._messages.next(updated);
           this.persistActiveMessages();
         }

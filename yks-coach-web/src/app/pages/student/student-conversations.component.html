@@ -1,31 +1,71 @@
-<section class="container" style="max-width:800px;margin:24px auto">
-  <h1>Öğrenci Paneli</h1>
-  <form (ngSubmit)="request()" class="request-form" *ngIf="!hasAccepted()">
-    <div class="input-wrap">
-      <span class="prefix">👤</span>
-      <input placeholder="Koç kullanıcı adı" [ngModel]="coach()" (ngModelChange)="coach.set($event)" name="coach" required />
+<section class="container" style="max-width:1000px;margin:24px auto">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px">
+    <h1 style="margin:0">Sohbet</h1>
+    <div style="display:flex;gap:8px">
+      <a routerLink="/student/conversations" style="padding:8px 16px;border:1px solid #36786b;border-radius:8px;color:#36786b;text-decoration:none;font-weight:600;background:#f0fdfa">💬 Sohbet</a>
+      <a routerLink="/student/schedule" style="padding:8px 16px;border:1px solid #e5e7eb;border-radius:8px;color:#64748b;text-decoration:none;font-weight:600;background:#f8fafc">📅 Takvim</a>
     </div>
-    <button class="btn btn-primary cta" type="submit">➕ Talep Gönder</button>
-  </form>
-  <div *ngFor="let c of visibleConversations()" (click)="toggle(c, $event)" style="border:1px solid #e5e7eb;border-radius:12px;padding:12px;margin:12px 0;cursor:pointer;box-shadow:0 2px 10px rgba(0,0,0,.04)">
-    <div style="display:flex;justify-content:space-between;align-items:center">
-      <div>
-        <div style="display:flex;align-items:center;gap:8px">
-          <span [style.background]="isCoachActiveNow(c) ? '#16a34a' : '#94a3b8'" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span>
-          <div style="font-weight:600">Koç: {{ c.coachUsername }}</div>
-          <span *ngIf="isCoachActiveNow(c)" style="font-size:12px;color:#16a34a">Aktif</span>
-        </div>
-        <div style="font-size:12px;color:#64748b;display:flex;align-items:center;gap:6px">
-          <span>Durum:</span>
-          <span *ngIf="c.status==='ACCEPTED'" aria-label="Kabul edildi" title="Kabul edildi" style="color:#16a34a">✓</span>
-          <span *ngIf="c.status==='REJECTED'" aria-label="Reddedildi" title="Reddedildi" style="color:#dc2626">✗</span>
-          <span *ngIf="c.status==='PENDING'" aria-label="Beklemede" title="Beklemede" style="color:#64748b">•</span>
+  </div>
+  
+  <!-- 2 Bölüm Layout -->
+  <div style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+    <!-- Sol Bölüm: Mevcut Konuşmalar -->
+    <div style="flex:1;min-width:320px;border:1px solid #e5e7eb;border-radius:10px;padding:10px">
+      <div style="font-weight:700;margin-bottom:8px">Mevcut Konuşmalar</div>
+      <div *ngIf="visibleConversations().length===0" style="font-size:12px;color:#64748b">Henüz konuşma yok.</div>
+      <div *ngFor="let c of visibleConversations()" (click)="toggle(c, $event)" style="border:1px solid #e5e7eb;border-radius:8px;padding:8px;margin:6px 0;cursor:pointer;transition:all 0.2s;hover:background:#f8fafc">
+        <div style="display:flex;justify-content:space-between;align-items:center">
+          <div>
+            <div style="display:flex;align-items:center;gap:8px">
+              <span [style.background]="isCoachActiveNow(c) ? '#16a34a' : '#94a3b8'" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span>
+              <div style="font-weight:600">Koç: {{ c.coachUsername }}</div>
+              <span *ngIf="isCoachActiveNow(c)" style="font-size:12px;color:#16a34a">Aktif</span>
+            </div>
+            <div style="font-size:12px;color:#64748b;display:flex;align-items:center;gap:6px">
+              <span>Durum:</span>
+              <span *ngIf="c.status==='ACCEPTED'" style="color:#16a34a">✓ Kabul edildi</span>
+              <span *ngIf="c.status==='REJECTED'" style="color:#dc2626">✗ Reddedildi</span>
+              <span *ngIf="c.status==='PENDING'" style="color:#64748b">• Beklemede</span>
+            </div>
+          </div>
         </div>
       </div>
-      <span *ngIf="c.status==='PENDING'" style="font-size:12px;color:#64748b">Beklemede</span>
-      <span *ngIf="c.status==='REJECTED'" style="font-size:12px;color:#dc2626">Reddedildi</span>
     </div>
-    <div *ngIf="activeId()===c.id" style="margin-top:12px;border-top:1px solid #e5e7eb;padding-top:12px" (click)="$event.stopPropagation()">
+    
+    <!-- Sağ Bölüm: Yeni Talep -->
+    <div style="flex:1;min-width:320px;border:1px solid #e5e7eb;border-radius:10px;padding:10px">
+      <div style="font-weight:700;margin-bottom:8px">Yeni Talep</div>
+      <form (ngSubmit)="request()" class="request-form" *ngIf="!hasAccepted()">
+        <div class="input-wrap">
+          <span class="prefix">👤</span>
+          <input placeholder="Koç kullanıcı adı" [ngModel]="coach()" (ngModelChange)="coach.set($event)" name="coach" required />
+        </div>
+        <button class="btn btn-primary cta" type="submit">➕ Talep Gönder</button>
+      </form>
+      <div *ngIf="hasAccepted()" style="font-size:12px;color:#64748b;text-align:center;padding:20px">
+        Zaten bir koç ile konuşma başlattınız.
+      </div>
+    </div>
+  </div>
+  
+  <!-- Konuşma Detayları -->
+  <ng-container *ngFor="let c of visibleConversations()">
+    <div *ngIf="activeId()===c.id" style="margin-top:16px;border:1px solid #e5e7eb;border-radius:12px;padding:16px;background:#fafafa">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+          <span [style.background]="isCoachActiveNow(c) ? '#16a34a' : '#94a3b8'" style="display:inline-block;width:8px;height:8px;border-radius:50%"></span>
+          <div style="font-weight:600;font-size:16px">Koç: {{ c.coachUsername }}</div>
+          <span *ngIf="isCoachActiveNow(c)" style="font-size:12px;color:#16a34a;background:#dcfce7;padding:2px 6px;border-radius:4px">Aktif</span>
+        </div>
+        <div style="font-size:12px;color:#64748b">
+          <span *ngIf="c.status==='ACCEPTED'" style="color:#16a34a">✓ Kabul edildi</span>
+          <span *ngIf="c.status==='REJECTED'" style="color:#dc2626">✗ Reddedildi</span>
+          <span *ngIf="c.status==='PENDING'" style="color:#64748b">• Beklemede</span>
+        </div>
+      </div>
+    </div>
+    <div (click)="$event.stopPropagation()">
       <div *ngIf="nextBooked()" style="margin:8px 0;padding:10px;border:1px solid #e5e7eb;border-radius:10px;background:#f0f9ff;color:#075985">
         Sonraki oturum: {{ formatRange(nextBooked()!.start, nextBooked()!.end) }}
       </div>
@@ -42,40 +82,7 @@
       </div>
       <div style="display:flex;gap:8px;margin-top:10px;align-items:center">
         <button class="btn" type="button" (click)="toggleVideo()" *ngIf="isWithinActiveBookedWindow()" style="border:1px solid #e5e7eb;border-radius:10px;padding:10px 14px">🎥 Video</button>
-      </div>
-      <!-- Scheduling section -->
-      <div style="margin-top:12px;padding:12px;border:1px solid #e5e7eb;border-radius:12px;background:#fafafa">
-        <div style="font-weight:600;margin-bottom:8px">Randevu Planlama</div>
-        <!-- Day picker and 30-min availability -->
-        <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px">
-          <input type="date" [min]="monthStart()" [max]="monthEnd()" [value]="selectedDate()" (change)="onDateChange($any($event.target).value)" style="border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px" />
-        </div>
-        <div *ngIf="selectedDate()" style="display:flex;flex-wrap:wrap;gap:8px">
-          <ng-container *ngFor="let b of dayGrid()">
-            <button *ngIf="b.state==='open'" type="button" (click)="requestHalfHour(b.start, b.end)" style="border:1px solid #bae6fd;border-radius:10px;padding:6px 10px;background:#e0f2fe;cursor:pointer">
-              {{ b.label }}
-            </button>
-          </ng-container>
-          <div *ngIf="!hasOpenBlocks()" style="color:#94a3b8;font-size:13px">Seçili günde uygun 30 dk aralığı yok.</div>
-        </div>
-
-        <!-- Existing slots list (status badges) -->
-        <div *ngIf="slots().length" style="margin-top:10px;display:flex;flex-direction:column;gap:8px">
-          <div *ngFor="let sl of slots()" style="display:flex;justify-content:space-between;align-items:center;border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px;background:#fff">
-            <div>
-              <div style="font-weight:600">{{ sl.title || 'Randevu' }}</div>
-              <div style="font-size:12px;color:#64748b">{{ formatRange(sl.start, sl.end) }}</div>
-            </div>
-            <div>
-              <span *ngIf="sl.status==='OPEN'" style="font-size:12px;color:#0284c7;background:#e0f2fe;border:1px solid #bae6fd;border-radius:999px;padding:4px 8px">Açık</span>
-              <span *ngIf="sl.status==='REQUESTED'" style="font-size:12px;color:#92400e;background:#fef3c7;border:1px solid #fde68a;border-radius:999px;padding:4px 8px">Onay bekliyor</span>
-              <span *ngIf="sl.status==='BOOKED'" style="font-size:12px;color:#166534;background:#dcfce7;border:1px solid #bbf7d0;border-radius:999px;padding:4px 8px">Rezerve edildi</span>
-              <span *ngIf="sl.status==='REJECTED'" style="font-size:12px;color:#991b1b;background:#fee2e2;border:1px solid #fecaca;border-radius:999px;padding:4px 8px">Reddedildi</span>
-              <span *ngIf="sl.status==='CANCELLED'" style="font-size:12px;color:#475569;background:#f1f5f9;border:1px solid #e2e8f0;border-radius:999px;padding:4px 8px">İptal edildi</span>
-            </div>
-          </div>
-        </div>
-        <div *ngIf="!slots().length" style="margin-top:10px;color:#94a3b8;font-size:13px">Henüz bir randevu yok.</div>
+        <a routerLink="/student/schedule" style="padding:8px 12px;border:1px solid #36786b;border-radius:10px;color:#36786b;text-decoration:none;font-weight:600;background:#f0fdfa">📅 Randevu Planla</a>
       </div>
       <div *ngIf="videoActive()" style="display:flex;gap:8px;margin-top:10px;align-items:flex-start">
         <video [appMediaStream]="localStream()" muted playsinline style="width:45%;background:#000;border-radius:8px"></video>
@@ -85,8 +92,9 @@
         <input name="msg" [ngModel]="draft()" (ngModelChange)="draft.set($event)" placeholder="Mesaj yazın..." style="flex:1;border:1px solid #e5e7eb;border-radius:10px;padding:10px"/>
         <button class="btn btn-primary" type="submit" style="background:#36786b;color:#fff;border:none;border-radius:10px;padding:10px 14px">Gönder</button>
       </form>
+      </div>
     </div>
-  </div>
+  </ng-container>
 </section>
 
 

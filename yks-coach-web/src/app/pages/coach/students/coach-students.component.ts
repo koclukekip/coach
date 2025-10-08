@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, signal, ViewChild, ElementRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ChatService } from 'app/services/chat.service';
@@ -16,6 +16,8 @@ import { PresenceClient } from 'app/services/profile.service';
   templateUrl: './coach-students.component.html'
 })
 export class CoachStudentsComponent {
+  @ViewChild('messagesBox') messagesBox?: ElementRef<HTMLDivElement>;
+  
   students = signal<CoachAssignment[]>([]);
   studentToAssign = signal('');
   messages = signal<{ role: 'user'|'coach'; text: string; ts?: number }[]>([]);
@@ -27,7 +29,11 @@ export class CoachStudentsComponent {
   presenceMap = signal<Record<string, boolean>>({});
   constructor(private assignmentSrv: CoachAssignmentService, private chat: ChatService, private conv: ConversationService, public rtc: WebRtcService, private schedule: ScheduleService, private presence: PresenceClient) {
     this.assignmentSrv.myStudents().subscribe(list => { this.students.set(list); this.refreshPresence(); });
-    this.chat.messages$.subscribe(ms => this.messages.set(ms));
+    this.chat.messages$.subscribe(ms => {
+      this.messages.set(ms);
+      // Yeni mesaj geldiğinde otomatik scroll
+      this.safeScrollToBottom();
+    });
     this.presence.start();
     // Periyodik presence yenilemesi
     setInterval(() => this.refreshPresence(), 30000);
@@ -60,6 +66,8 @@ export class CoachStudentsComponent {
       const mapped = list.map(m => ({ role: m.from === me ? 'user' : 'coach', text: m.text, ts: Date.parse(m.createdAt) }));
       this.chat.replaceMessages(mapped as any);
       this.chat.setActiveConversation(c.id);
+      // Konuşma açıldığında scroll
+      this.safeScrollToBottom();
     });
     this.schedule.list(c.id).subscribe(list => this.slots.set(list));
   }
@@ -68,7 +76,14 @@ export class CoachStudentsComponent {
     if (this.activeStudent() === studentUsername) { this.closeChat(); }
     else { this.openByStudent(studentUsername); }
   }
-  send() { const text = this.draft().trim(); if (!text) return; this.chat.send(text); this.draft.set(''); }
+  send() { 
+    const text = this.draft().trim(); 
+    if (!text) return; 
+    this.chat.send(text); 
+    this.draft.set('');
+    // Mesaj gönderildikten sonra scroll
+    this.safeScrollToBottom();
+  }
   localStream = () => this.rtc.localStream();
   remoteStream = () => this.rtc.remoteStream();
   toggleVideo() {
@@ -96,6 +111,17 @@ export class CoachStudentsComponent {
       const mm = String(d.getMinutes()).padStart(2, '0');
       return `${hh}:${mm}`;
     } catch { return ''; }
+  }
+
+  private safeScrollToBottom(): void {
+    requestAnimationFrame(() => {
+      const el = this.messagesBox?.nativeElement;
+      if (!el) return;
+      // run twice to ensure after ngFor renders
+      requestAnimationFrame(() => {
+        el.scrollTop = el.scrollHeight;
+      });
+    });
   }
 }
 

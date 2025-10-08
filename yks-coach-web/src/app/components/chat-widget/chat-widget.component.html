@@ -6,8 +6,8 @@
 
   <div class="chat-panel" *ngIf="isOpen()">
     <div class="chat-header">Canlı Destek</div>
-    <div class="chat-messages">
-      <div *ngFor="let m of messages()" class="msg" [class.me]="m.role!=='user'">
+    <div class="chat-messages" #messagesContainer>
+      <div *ngFor="let m of messages(); trackBy: trackByMessage" class="msg" [class.me]="m.role!=='user'">
         <div class="bubble">{{ m.text }}</div>
       </div>
     </div>

@@ -3,7 +3,7 @@
   position: fixed;
   right: 20px;
   bottom: 20px;
-  z-index: 1000;
+  z-index: 9999;
   font-family: 'Inter', sans-serif;
 }
 
@@ -82,13 +82,15 @@
 
 .chat-messages {
   flex: 1;
-  overflow: auto;
+  overflow-y: auto;
+  overflow-x: hidden;
   padding: 20px;
   display: flex;
   flex-direction: column;
   gap: 16px;
   background: var(--bg-secondary);
   max-height: 400px;
+  scroll-behavior: smooth;
 }
 
 .chat-messages::-webkit-scrollbar {
